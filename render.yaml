@@ -1,0 +1,30 @@
+# Render Blueprint. In Render: New → Blueprint → point at this repo.
+# Everything below can also be set by hand in the dashboard; this file just
+# means you don't have to.
+services:
+  - type: web
+    name: server-management
+    runtime: node
+    plan: starter
+    startCommand: node server.js
+    healthCheckPath: /
+
+    envVars:
+      # sync: false = Render prompts for the value and keeps it out of git.
+      - key: JIRA_BASE_URL
+        sync: false
+      - key: JIRA_EMAIL
+        sync: false
+      - key: JIRA_API_TOKEN
+        sync: false
+      # Keeps bookings and configured environments on the disk below.
+      - key: STATE_FILE
+        value: /var/data/shared-state.json
+
+    # Persistent disks need a paid instance type. On the free plan, delete
+    # this block AND the STATE_FILE var above — the app still runs, but its
+    # state resets to the seed in js/data.js on every restart or redeploy.
+    disk:
+      name: state
+      mountPath: /var/data
+      sizeGB: 1

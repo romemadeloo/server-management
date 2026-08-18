@@ -31,7 +31,10 @@ const { buildDefaultAppData, migrateAppData, matchRepositoriesToKeys, matchUserI
 
 const PORT = process.env.PORT || 4000;
 const ROOT = __dirname;
-const STATE_FILE = path.join(ROOT, "shared-state.json");
+// STATE_FILE points at a mounted disk on a host, so bookings and configured
+// environments survive a restart. Without it the app still runs — state just
+// resets to the seed in js/data.js whenever the process is replaced.
+const STATE_FILE = process.env.STATE_FILE || path.join(ROOT, "shared-state.json");
 const JIRA_CONFIG_FILE = path.join(ROOT, "jira-config.json");
 
 // Accept a saved baseUrl with or without a protocol (people paste bare
@@ -59,7 +62,9 @@ function loadState() {
     try {
       const parsed = JSON.parse(fs.readFileSync(STATE_FILE, "utf8"));
       if (parsed.users && parsed.accounts && parsed.servers) {
-        if (migrateAppData(parsed)) fs.writeFileSync(STATE_FILE, JSON.stringify(parsed, null, 2));
+        if (migrateAppData(parsed)) {
+          try { fs.writeFileSync(STATE_FILE, JSON.stringify(parsed, null, 2)); } catch (err) { /* read-only disk */ }
+        }
         return parsed;
       }
     } catch (err) {
@@ -67,7 +72,13 @@ function loadState() {
     }
   }
   const seeded = buildDefaultAppData();
-  fs.writeFileSync(STATE_FILE, JSON.stringify(seeded, null, 2));
+  try {
+    fs.writeFileSync(STATE_FILE, JSON.stringify(seeded, null, 2));
+  } catch (err) {
+    // Read-only disk (most PaaS hosts). Run from memory instead of dying —
+    // persist() already ignores its own write errors for the same reason.
+    console.warn("Could not write " + STATE_FILE + " — running with in-memory state only.");
+  }
   return seeded;
 }
 
@@ -107,7 +118,21 @@ function readBody(req) {
 // Never part of `state`, so never broadcast to browser tabs over SSE.
 // Read fresh each call so editing jira-config.json by hand still works.
 
+// A deployment supplies credentials as environment variables — its disk is
+// usually read-only, and jira-config.json is gitignored precisely so the
+// token never rides along in the repo. Env wins over the file so a stale
+// local file can't quietly override what the host is configured with.
+function jiraConfigFromEnv() {
+  const baseUrl = process.env.JIRA_BASE_URL;
+  const email = process.env.JIRA_EMAIL;
+  const apiToken = process.env.JIRA_API_TOKEN;
+  if (!baseUrl || !email || !apiToken) return null;
+  return { baseUrl: baseUrl.trim(), email: email.trim(), apiToken: apiToken.trim() };
+}
+
 function loadJiraConfig() {
+  const fromEnv = jiraConfigFromEnv();
+  if (fromEnv) return fromEnv;
   if (!fs.existsSync(JIRA_CONFIG_FILE)) return null;
   try {
     const config = JSON.parse(fs.readFileSync(JIRA_CONFIG_FILE, "utf8"));
@@ -132,13 +157,22 @@ async function handleJiraConfigGet(res) {
   sendJson(res, 200, {
     baseUrl: config ? config.baseUrl : "",
     email: config ? config.email : "",
-    hasToken: !!(config && config.apiToken)
+    hasToken: !!(config && config.apiToken),
+    // Settings shows these read-only when the host owns them.
+    managedByEnv: !!jiraConfigFromEnv()
   });
 }
 
 async function handleJiraConfigPost(req, res) {
   try {
     const body = await readBody(req);
+    if (jiraConfigFromEnv()) {
+      sendJson(res, 200, {
+        ok: false,
+        error: "Jira credentials come from environment variables on this deployment. Change them in your host's settings, not here."
+      });
+      return;
+    }
     const existing = loadJiraConfig() || {};
     const next = {
       baseUrl: (body.baseUrl || "").trim(),
