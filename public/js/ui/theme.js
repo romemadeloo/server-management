@@ -342,7 +342,11 @@ const Theme = (() => {
     <fieldset class="mt-5">
       <legend class="text-xs font-bold uppercase tracking-[0.12em] text-faint">Appearance</legend>
       <div class="mt-3 grid grid-cols-3 gap-1 rounded-xl bg-subtle-2 p-1">${MODES.map(modeOption).join("")}</div>
-    </fieldset>`;
+    </fieldset>
+    <div class="mt-5 flex items-center justify-between gap-4 rounded-xl bg-subtle p-3">
+      <div><p class="text-xs font-semibold text-ink-2">Confetti</p><p class="mt-0.5 text-[11px] text-faint">Show it across the app</p></div>
+      ${H.toggle(Confetti.isEnabled(), { "data-action": "toggle-confetti" })}
+    </div>`;
     panel.hidden = !open;
     if (focused && open) {
       const next = Array.from(panel.querySelectorAll(`input[name="${focused.name}"]`))
@@ -384,10 +388,14 @@ const Theme = (() => {
     else if (media.addListener) media.addListener(onSystemChange);
   }
 
-  return { init, toggle, setPalette, setCustomColor, setMode, getPalette, getMode, getPrimaryColor, isDark };
+  return { init, render, toggle, setPalette, setCustomColor, setMode, getPalette, getMode, getPrimaryColor, isDark };
 })();
 
 Actions.on("toggle-appearance", () => Theme.toggle());
 Actions.onChange("theme-palette", (el) => Theme.setPalette(el.value));
 Actions.onChange("theme-custom-color", (el) => Theme.setCustomColor(el.value));
 Actions.onChange("theme-mode", (el) => Theme.setMode(el.value));
+Actions.on("toggle-confetti", () => {
+  Confetti.setEnabled(!Confetti.isEnabled());
+  Theme.render();
+});

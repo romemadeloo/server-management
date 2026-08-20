@@ -1,6 +1,11 @@
-(() => {
+const Confetti = (() => {
   const canvas = document.getElementById("confetti-canvas");
-  if (!canvas || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const STORAGE_KEY = "serverManager.confettiEnabled";
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let enabled = readEnabled();
+  let running = false;
+
+  if (!canvas) return { isEnabled: () => enabled, setEnabled: () => {} };
 
   const context = canvas.getContext("2d");
   const colors = ["#007f6d", "#0369a1", "#047857", "#f59e0b", "#e11d48"];
@@ -9,6 +14,10 @@
   let height = 0;
   let pixelRatio = 1;
   let animationFrame;
+
+  function readEnabled() {
+    try { return localStorage.getItem(STORAGE_KEY) !== "false"; } catch (err) { return true; }
+  }
 
   function resize() {
     pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
@@ -56,12 +65,34 @@
     animationFrame = requestAnimationFrame(draw);
   }
 
-  resize();
-  for (let index = 0; index < 42; index += 1) pieces.push(makePiece());
+  function start() {
+    if (running || reducedMotion) return;
+    running = true;
+    canvas.hidden = false;
+    resize();
+    if (!pieces.length) for (let index = 0; index < 42; index += 1) pieces.push(makePiece());
+    animationFrame = requestAnimationFrame(draw);
+  }
+
+  function stop() {
+    running = false;
+    cancelAnimationFrame(animationFrame);
+    context.clearRect(0, 0, width, height);
+    canvas.hidden = true;
+  }
+
+  function setEnabled(value) {
+    enabled = !!value;
+    try { localStorage.setItem(STORAGE_KEY, String(enabled)); } catch (err) { /* persistence is optional */ }
+    if (enabled) start(); else stop();
+  }
+
   window.addEventListener("resize", resize, { passive: true });
-  animationFrame = requestAnimationFrame(draw);
 
   window.addEventListener("pagehide", () => {
-    cancelAnimationFrame(animationFrame);
+    stop();
   }, { once: true });
+
+  if (enabled) start(); else stop();
+  return { isEnabled: () => enabled, setEnabled };
 })();

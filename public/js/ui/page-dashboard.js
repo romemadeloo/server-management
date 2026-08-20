@@ -38,6 +38,14 @@ Router.register("dashboard", {
         ${H.statTile("brand", "Freeing up soon", s.soon, "within 2 hours", "clock")}
       </section>
 
+      <section class="mt-5 grid grid-cols-1 items-start gap-5 xl:grid-cols-[1.4fr_1fr]">
+        <div class="space-y-5">
+          <section data-weather-report></section>
+          <section data-canyoneering-plan></section>
+        </div>
+        <section data-philippines-news></section>
+      </section>
+
       <section class="mt-7">
         <div class="flex items-center justify-between">
           <h2 class="text-[17px] font-bold tracking-tight">Held right now</h2>
@@ -75,6 +83,12 @@ Router.register("dashboard", {
           "No ticket is holding a repository."
         )}
       </section>`);
+  },
+
+  mount(host) {
+    WeatherReport.mount(host.querySelector("[data-weather-report]"));
+    CanyoneeringPlan.mount(host.querySelector("[data-canyoneering-plan]"));
+    PhilippinesNews.mount(host.querySelector("[data-philippines-news]"));
   },
 
   card(row) {
