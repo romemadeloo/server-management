@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { Sidebar, type AccountRollup } from "@/components/shell/Sidebar";
 import { Topbar } from "@/components/shell/Topbar";
 import { PusherProvider } from "@/components/providers/PusherProvider";
+import { OfflineBanner } from "@/components/pwa/OfflineBanner";
 import { PresenceProvider } from "@/components/providers/PresenceProvider";
 import { UnreadProvider } from "@/components/providers/UnreadProvider";
 import { JiraNotificationProvider } from "@/components/providers/JiraNotificationProvider";
@@ -129,6 +130,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
                   />
                 </Suspense>
 
+                <OfflineBanner />
                 <main className="no-scrollbar min-h-0 flex-1 overflow-y-auto pt-5">{children}</main>
               </div>
             </div>

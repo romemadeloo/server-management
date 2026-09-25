@@ -1,10 +1,22 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import NextTopLoader from "nextjs-toploader";
+import { ServiceWorkerRegister } from "@/components/pwa/ServiceWorkerRegister";
+import { InstallPromptProvider } from "@/components/pwa/InstallPromptProvider";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Glophics Portal",
   description: "Which QA/staging environments are free, and which are held by a Jira ticket.",
+  icons: { apple: "/icons/apple-touch-icon.png" },
+  appleWebApp: { capable: true, title: "Glophics", statusBarStyle: "default" },
+};
+
+// System light/dark defaults; following custom palettes is a separate change.
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#007f6d" },
+    { media: "(prefers-color-scheme: dark)", color: "#0e1211" },
+  ],
 };
 
 /**
@@ -87,7 +99,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           // is never underlined by a progress bar creeping across it.
           zIndex={40}
         />
-        {children}
+        <ServiceWorkerRegister />
+        <InstallPromptProvider>{children}</InstallPromptProvider>
       </body>
     </html>
   );

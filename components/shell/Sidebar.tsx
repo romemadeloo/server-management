@@ -12,6 +12,7 @@ import { AvatarDialog } from "./AvatarDialog";
 import { ChangePasswordDialog } from "./ChangePasswordDialog";
 import type { AuthUser, EnvStatus } from "@/lib/types";
 import { useUnread } from "@/components/providers/UnreadProvider";
+import { useInstallPrompt } from "@/components/pwa/useInstallPrompt";
 
 /**
  * Sidebar navigation and the per-account list.
@@ -120,6 +121,7 @@ export function Sidebar({
   const user_menu_ref = useRef<HTMLDivElement>(null);
   const user_menu_trigger_ref = useRef<HTMLButtonElement>(null);
   const { total: liveUnread } = useUnread();
+  const { available: install_available, install } = useInstallPrompt();
 
   const groups: NavGroup[] = ["overview", "activity"];
   const footer_items = visible.filter((item) => item.group === "settings");
@@ -298,6 +300,21 @@ export function Sidebar({
                 <Icon name="users" className="h-3.5 w-3.5 shrink-0 text-faint" />
                 Profile picture
               </button>
+              {install_available ? (
+                <button
+                  type="button"
+                  role="menuitem"
+                  onClick={() => {
+                    void install();
+                    setUserMenuOpen(false);
+                    user_menu_trigger_ref.current?.focus();
+                  }}
+                  className="flex min-h-10 w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-xs font-semibold text-body transition hover:bg-subtle hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+                >
+                  <Icon name="plus" className="h-3.5 w-3.5 shrink-0 text-faint" />
+                  Install app
+                </button>
+              ) : null}
               <button
                 type="button"
                 onClick={() => {

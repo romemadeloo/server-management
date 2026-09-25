@@ -300,7 +300,7 @@ places where a bug is a privacy incident rather than a glitch:
 - [ ] Walk the [parity checklist](#parity-checklist) on the deployed app.
 - [ ] Switch the team over. Everyone signs in again (sessions were not imported).
 - [ ] Keep the old app **and its `shared-data/` snapshot** available, untouched, for one sprint.
-- [ ] Only then delete `server/`, `public/`, `shared/`, `config/`, and archive `shared-data/`.
+- [ ] Only then delete `server/`, `public/index.html`, `public/js/`, `shared/`, `config/`, and archive `shared-data/`. Preserve `public/`: the PWA uses `sw.js`, `offline.html` and `icons/`.
 - [ ] Write the `DEPLOY.md` that `README.md` already links to and that has never existed.
 
 ---

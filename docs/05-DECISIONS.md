@@ -560,3 +560,37 @@ Verified against the live database: array columns (`repos`, `user_ids`, `raw_ass
 intact, `jira_issues` and `claims` stay disjoint, no claim violates `claims_time_order`, and no child
 row is orphaned. The notification batch was proved with a deliberate rollback — 250 rows over two
 statements, table count unchanged — rather than by writing real alerts to real people.
+
+---
+
+## ADR-019 - The PWA caches no data
+
+**Status:** Accepted
+
+**Context.** Installing the portal gives it a standalone window that may stay open for days.
+A stale board can show an occupied environment as free. Caching per-user HTML, RSC payloads,
+API responses or chat files would also bypass the next server-side permission check, and Cache
+Storage survives logout on shared machines. Those are three independent reasons to avoid it.
+
+**Decision.** The service worker stores exactly one static file, `/offline.html`. Only GET
+navigations are intercepted: network responses, including HTTP errors, pass through unchanged;
+a network failure shows the offline page. API calls, attachments, avatars, previews, rendered
+pages and RSC payloads are never cached by the worker. The browser's existing HTTP cache handles
+hashed build assets. There is no offline mutation queue and no Web Push in this pass.
+
+The manifest, icons, worker and offline page bypass the session redirect but retain the IP gate.
+An open board warns after five seconds offline or with an unavailable/failed realtime connection;
+the existing Pusher reconnect refresh catches up. Installation is opt-in in the account menu.
+
+**Consequences.** Offline reading remains unavailable (Q11). The offline page asks users to retry
+after reconnecting, rather than promising an automatic reload it cannot perform without script.
+Worker activation removes older PWA caches; bump its cache version whenever the offline page
+changes. Only caches owned by this worker are removed, so unrelated same-origin caches survive.
+The static files in `public/` must survive the legacy cutover. Revisit offline reading only with
+explicit last-updated labels and cache clearing on logout and `session.revoked`.
+
+**Implementation.** The live account menu is in `components/shell/Sidebar.tsx`; the older
+`AccountMenu.tsx` referenced by the initial plan is no longer mounted. A root install-prompt
+provider captures events even before that menu mounts. The browser check uses
+`npm run build`, `npm start`, then `BASE_URL=http://localhost:3000 npm run verify:pwa` from an
+allowed IP. `tests/pwa-worker.test.ts` exercises the shipped worker's cache boundary and failures.

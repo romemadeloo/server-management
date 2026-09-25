@@ -29,7 +29,8 @@
     "verify:link-preview": "tsx scripts/verify-link-preview.mts",
     "verify:chat:mentions": "tsx scripts/verify-chat-mentions.mts",
     "verify:tickets": "tsx scripts/verify-tickets.mts",
-    "verify:team": "tsx scripts/verify-team.mts"
+    "verify:team": "tsx scripts/verify-team.mts",
+    "verify:pwa": "tsx scripts/verify-pwa.mts"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",

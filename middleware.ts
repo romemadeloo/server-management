@@ -55,6 +55,11 @@ const PUBLIC_PATHS = [
   "/api/auth/login",
   "/api/auth/logout",
   "/api/auth/me",
+  // Cookie-free installation assets still pass the IP gate above the session check.
+  "/manifest.webmanifest",
+  "/icons",
+  "/sw.js",
+  "/offline.html",
 ];
 
 /**

@@ -18,7 +18,7 @@ Record answers **in this file**, with a date, and update the ADR in
 | [Q8](#q8) | Retention, deletion, and what "delete" means | Phase 13 | Open |
 | [Q9](#q9) | Are group chats tied to environments/tickets? | Phase 9 | Open |
 | [Q10](#q10) | Acceptable Jira sync freshness | Phase 6 | Open |
-| [Q11](#q11) | Is losing the offline board cache acceptable? | Phase 5 | Open |
+| [Q11](#q11) | Is losing the offline board cache acceptable? | Phase 5 | **Answered** — accepted; static offline state only |
 | [Q12](#q12) | Team size ceiling vs presence cap | Phase 10 | Open |
 
 ---
@@ -323,7 +323,9 @@ says is free is the exact failure the app exists to prevent.
 If offline reading is wanted later, that is a deliberate PWA feature with explicit "last updated"
 labelling, not a silent cache.
 
-**Answer:** _(pending)_
+**Answer: accepted.** The PWA caches only a static offline page. The board remains online-only,
+and an open page warns when connectivity is lost. No authenticated pages, API responses or chat
+files are stored by the service worker. See ADR-019 in `docs/05-DECISIONS.md`.
 
 ---
 
