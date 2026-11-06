@@ -973,7 +973,7 @@ export function Thread({
   );
 
   return (
-    <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-2xl bg-surface shadow-sm ring-1 ring-line">
+    <div className="flex h-full min-h-0 flex-col overflow-hidden glass rounded-[20px] bg-surface ring-1 ring-line">
       <div className="flex shrink-0 items-center gap-3 border-b border-line px-4 py-3">
         <Avatar
           person={{
@@ -988,8 +988,8 @@ export function Thread({
           online={tracking && dmPartner ? online.has(dmPartner.id) : undefined}
         />
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-bold">{title}</p>
-          <p className="truncate text-[11px] text-faint">
+          <p className="truncate text-sm font-semibold">{title}</p>
+          <p className="truncate text-xs text-faint">
             {isGroup ? (
               // Names rather than a bare count: in a group of five, who is in it
               // is the thing you actually want to know at a glance.
@@ -1152,7 +1152,7 @@ export function Thread({
           tap that silently does nothing reads as a broken button. */}
       {jumpFailed ? (
         <p
-          className="mx-auto -mt-2 mb-1 rounded-full bg-subtle-2 px-3 py-1.5 text-[11px] font-semibold text-faint"
+          className="mx-auto -mt-2 mb-1 rounded-full bg-subtle-2 px-3 py-1.5 text-xs font-semibold text-faint"
           aria-live="polite"
         >
           That message isn&apos;t in this conversation any more.
@@ -1179,7 +1179,7 @@ export function Thread({
           aria-label={missed > 0 ? `${missed} new messages, jump to the latest` : "Jump to the latest message"}
           className={`mx-auto -mt-2 mb-1 flex items-center gap-1.5 rounded-full shadow-lg transition ${
             missed > 0
-              ? "bg-accent px-3 py-1.5 text-[11px] font-semibold text-on-accent"
+              ? "bg-accent px-3 py-1.5 text-xs font-semibold text-on-accent"
               : // No unread: a quiet circle rather than a labelled pill, so it does
                 // not read as a notification when there is nothing to notify.
                 "bg-surface p-1.5 text-muted ring-1 ring-line-2 hover:text-brand-fg hover:ring-brand-soft"
@@ -1192,7 +1192,7 @@ export function Thread({
 
       <div className="h-5 shrink-0 px-4">
         {typingNames.length ? (
-          <p className="truncate text-[11px] italic text-faint">
+          <p className="truncate text-xs italic text-faint">
             {typingNames.length === 1
               ? `${typingNames[0]} is typing…`
               : `${typingNames.length} people are typing…`}
@@ -1221,7 +1221,7 @@ export function Thread({
         />
 
         {uploads.error ? (
-          <p className="px-3 pt-2 text-[11px] font-semibold text-bad" aria-live="polite">
+          <p className="px-3 pt-2 text-xs font-semibold text-bad" aria-live="polite">
             {uploads.error}
           </p>
         ) : null}
@@ -1248,7 +1248,7 @@ export function Thread({
           <div className="min-w-0 flex-1">
           {showCounter ? (
             <p
-              className={`mb-1 text-right text-[10px] font-semibold ${
+              className={`mb-1 text-right text-[11px] font-semibold ${
                 overLimit ? "text-bad" : "text-faint"
               }`}
               // Announced only once it matters, so a screen reader is not told
@@ -1334,7 +1334,7 @@ export function Thread({
             }
           }}
           onKeyUp={syncCaret}
-          className={`max-h-32 min-h-[42px] w-full resize-y rounded-xl bg-subtle px-3.5 py-2.5 text-sm text-ink-2 placeholder:text-faintest focus:bg-surface focus:outline-none focus:ring-2 ${
+          className={`max-h-32 min-h-[42px] w-full resize-y rounded-md bg-subtle px-3.5 py-2.5 text-sm text-ink-2 placeholder:text-faintest focus:bg-surface focus:outline-none focus:ring-2 ${
             overLimit ? "ring-2 ring-bad focus:ring-bad" : "focus:ring-brand-soft"
           }`}
         />
@@ -1485,7 +1485,7 @@ function Bubble({
       className={`group flex scroll-mt-8 flex-col ${mine ? "items-end" : "items-start"}`}
     >
       {!mine && author ? (
-        <p className="mb-0.5 pl-9 text-[10px] font-semibold text-faint">{author}</p>
+        <p className="mb-0.5 pl-9 text-[11px] font-semibold text-faint">{author}</p>
       ) : null}
 
       {/* The row: face, words, and the controls that act on them. */}
@@ -1499,11 +1499,11 @@ function Bubble({
         ) : null}
 
         <div
-          className={`min-w-0 rounded-2xl px-3.5 py-2 text-sm leading-relaxed transition-shadow ${
+          className={`min-w-0 rounded-lg px-3.5 py-2 text-sm leading-relaxed transition-shadow ${
             deleted
               ? "bg-subtle-2 italic text-faint"
               : mine
-                ? "bg-brand-500 text-white"
+                ? "bg-brand-500 text-on-brand"
                 : "bg-subtle text-ink-2"
           } ${state === "failed" ? "ring-1 ring-bad" : ""} ${
             state === "sending" ? "opacity-60" : ""
@@ -1644,7 +1644,7 @@ function Bubble({
             />
           ))}
           {seenBy.length > 6 ? (
-            <span className="ml-0.5 text-[9px] font-semibold text-faintest">
+            <span className="ml-0.5 text-[10px] font-semibold text-faintest">
               +{seenBy.length - 6}
             </span>
           ) : null}
@@ -1710,7 +1710,7 @@ function Status({
 
   return (
     <>
-      <span className="text-[10px] text-faintest">{formatDateTime(at)}</span>
+      <span className="text-[11px] text-faintest">{formatDateTime(at)}</span>
       {/* A single tick, and ONLY while nobody has caught up.
           "Read" is no longer a tick at all — it is the row of faces below, which
           says who as well as whether. Two ticks and a column of avatars would be
@@ -1743,7 +1743,7 @@ function SystemLine({ body, at }: { body: string; at: string }) {
   return (
     <div className="flex justify-center py-1">
       <p
-        className="max-w-[85%] rounded-full bg-subtle-2 px-3 py-1 text-center text-[11px] text-faint"
+        className="max-w-[85%] rounded-full bg-subtle-2 px-3 py-1 text-center text-xs text-faint"
         title={formatDateTime(at) ?? undefined}
       >
         {body}
@@ -1792,7 +1792,7 @@ function DeleteButton({ onDelete }: { onDelete: () => void }) {
           // primed button behind. It is a deliberate focus move: the reader just
           // asked for this control.
           autoFocus
-          className="rounded-full bg-bad-strong px-2 py-0.5 text-[10px] font-semibold text-white"
+          className="rounded-full bg-bad-strong px-2 py-0.5 text-[11px] font-semibold text-white"
         >
           Delete
         </button>
@@ -1800,7 +1800,7 @@ function DeleteButton({ onDelete }: { onDelete: () => void }) {
           type="button"
           onClick={() => setArmed(false)}
           aria-label="Keep this message"
-          className="text-[10px] font-semibold text-faint hover:text-ink-2"
+          className="text-[11px] font-semibold text-faint hover:text-ink-2"
         >
           Keep
         </button>

@@ -13,7 +13,7 @@ import type { Claim, Environment, ServerRepo } from "@/lib/types";
  * a plain badge and says so on hover.
  */
 
-const SHAPE = "block w-9 shrink-0 rounded-md py-0.5 text-center text-[9px] font-bold";
+const SHAPE = "block w-9 shrink-0 rounded-md py-0.5 text-center text-[10px] font-semibold";
 
 function chipClass(repo: ServerRepo, held: boolean): string {
   if (repo.health === "offline") return "bg-bad-strong/85 text-white";

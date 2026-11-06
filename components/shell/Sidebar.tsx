@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useIsOnline } from "@/components/providers/PresenceProvider";
 import { Avatar } from "@/components/ui/Avatar";
 import { Icon } from "@/components/ui/Icon";
+import { Menu, MenuHeader, MenuItem, MenuLinkItem, MenuSeparator, Tooltip } from "@/components/ui/Popover";
 import { BADGE_TONES, GROUP_LABELS, NAV, type NavCounts, type NavGroup, type NavItem } from "@/lib/shared/nav";
 import { roleCan, roleLabel } from "@/lib/shared/roles";
 import { AvatarDialog } from "./AvatarDialog";
@@ -54,7 +55,9 @@ function Badge({ item, counts, liveUnread }: { item: NavItem; counts: NavCounts;
   if (!count) return null;
 
   return (
-    <span className={`rounded-full px-2 py-0.5 text-[11px] font-bold ${BADGE_TONES[item.tone ?? "plain"]}`}>
+    <span
+      className={`inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-full px-1.5 text-[11px] font-semibold tabular-nums leading-none ${BADGE_TONES[item.tone ?? "plain"]}`}
+    >
       {count}
     </span>
   );
@@ -75,26 +78,39 @@ function NavLink({
   liveUnread: number;
   collapsed?: boolean;
 }) {
-  return (
+  const link = (
     <Link
       href={item.href}
       onClick={onNavigate}
-      title={collapsed ? item.label : undefined}
       aria-label={collapsed ? item.label : undefined}
-      className={`relative flex items-center rounded-xl py-2.5 text-sm transition ${
-        collapsed ? "justify-center px-2" : "gap-3 px-3"
+      aria-current={active ? "page" : undefined}
+      className={`relative flex h-9 items-center rounded-xl text-[13px] transition-colors ${
+        collapsed ? "justify-center px-2" : "gap-2.5 px-2.5"
       } ${
         active
-          ? "bg-brand-soft font-semibold text-brand-fg"
-          : "font-medium text-muted hover:bg-subtle hover:text-ink"
+          ? "bg-brand-soft font-medium text-ink shadow-[inset_0_0_0_1px_color-mix(in_oklab,var(--color-brand-500)_30%,transparent)]"
+          : "text-body hover:bg-subtle-2 hover:text-ink"
       }`}
     >
-      <Icon name={item.icon} className="h-4.5 w-4.5 shrink-0" />
-      {collapsed ? null : <span className="flex-1">{item.label}</span>}
-      <span className={collapsed ? "absolute -right-0.5 -top-1 scale-75" : ""}>
+      {/* The active item is marked by a short bar on the leading edge as well as
+          by its surface - colour alone is not a state indicator. */}
+      {active && !collapsed ? (
+        <span aria-hidden className="absolute -left-3 top-2 h-5 w-[3px] rounded-r-full bg-brand-500 shadow-[0_0_10px_var(--color-brand-500)]" />
+      ) : null}
+      <Icon name={item.icon} className={`h-4 w-4 shrink-0 ${active ? "text-brand-fg" : "text-faint"}`} />
+      {collapsed ? null : <span className="min-w-0 flex-1 truncate">{item.label}</span>}
+      <span className={collapsed ? "absolute -right-1 -top-1 scale-90" : ""}>
         <Badge item={item} counts={counts} liveUnread={liveUnread} />
       </span>
     </Link>
+  );
+
+  return collapsed ? (
+    <Tooltip content={item.label} side="right">
+      {link}
+    </Tooltip>
+  ) : (
+    link
   );
 }
 
@@ -113,39 +129,23 @@ export function Sidebar({
   const pathname = usePathname();
   const visible = NAV.filter((item) => !item.requires || roleCan(user.role, item.requires));
   const online = useIsOnline(user.id);
-  const [user_menu_open, setUserMenuOpen] = useState(false);
   const [avatar_open, setAvatarOpen] = useState(false);
   const [password_open, setPasswordOpen] = useState(false);
   const [signing_out, setSigningOut] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
-  const user_menu_ref = useRef<HTMLDivElement>(null);
-  const user_menu_trigger_ref = useRef<HTMLButtonElement>(null);
+
+  // A 240px sidebar on a 375px phone leaves the page a column one word wide, so
+  // narrow screens start on the icon rail. Read after mount, not in the state
+  // initializer: the server has no viewport, and a mismatched first render
+  // would be a hydration error. The toggle still works either way.
+  useEffect(() => {
+    if (window.matchMedia("(max-width: 767px)").matches) setCollapsed(true);
+  }, []);
   const { total: liveUnread } = useUnread();
   const { available: install_available, install } = useInstallPrompt();
 
   const groups: NavGroup[] = ["overview", "activity"];
   const footer_items = visible.filter((item) => item.group === "settings");
-
-  useEffect(() => {
-    if (!user_menu_open) return;
-
-    function onPointerDown(event: MouseEvent) {
-      if (!user_menu_ref.current?.contains(event.target as Node)) setUserMenuOpen(false);
-    }
-
-    function onKeyDown(event: KeyboardEvent) {
-      if (event.key !== "Escape") return;
-      setUserMenuOpen(false);
-      user_menu_trigger_ref.current?.focus();
-    }
-
-    document.addEventListener("mousedown", onPointerDown);
-    document.addEventListener("keydown", onKeyDown);
-    return () => {
-      document.removeEventListener("mousedown", onPointerDown);
-      document.removeEventListener("keydown", onKeyDown);
-    };
-  }, [user_menu_open]);
 
   async function signOut() {
     setSigningOut(true);
@@ -155,21 +155,30 @@ export function Sidebar({
 
   return (
     <aside
-      className={`flex h-full shrink-0 flex-col border-r border-line bg-canvas transition-[width] duration-200 ${
-        collapsed ? "w-20" : "w-60"
+      className={`glass flex h-full shrink-0 flex-col border-r border-line bg-canvas transition-[width] duration-200 ${
+        collapsed ? "w-16" : "w-60"
       }`}
     >
-      <div className={`flex items-center py-5 ${collapsed ? "gap-1 px-1" : "gap-2.5 px-5"}`}>
-        <span className="grid h-9 w-9 place-items-center rounded-xl bg-brand-500 text-white shadow-lg shadow-brand-500/30">
-          <Icon name="servers" className="h-4.5 w-4.5" />
+      <div
+        className={`flex shrink-0 items-center border-b border-line ${
+          collapsed ? "flex-col justify-center gap-1 px-1 py-2" : "h-14 gap-2.5 px-4"
+        }`}
+      >
+        <span className="glow grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-brand-500 text-on-brand">
+          <Icon name="servers" className="h-4 w-4" />
         </span>
-        {collapsed ? null : <span className="flex-1 text-[17px] font-bold tracking-tight">Glophics</span>}
+        {collapsed ? null : (
+          <span className="min-w-0 flex-1 leading-tight">
+            <span className="block text-sm font-semibold text-ink">Glophics</span>
+            <span className="block text-[11px] text-muted">Environment board</span>
+          </span>
+        )}
         <button
           type="button"
           onClick={() => setCollapsed((value) => !value)}
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-          className="grid h-8 w-8 shrink-0 place-items-center rounded-lg text-faint transition hover:bg-subtle hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+          className="grid h-7 w-7 shrink-0 place-items-center rounded-md text-faint transition-colors hover:bg-subtle-2 hover:text-ink"
         >
           <Icon
             name="chevron"
@@ -178,7 +187,7 @@ export function Sidebar({
         </button>
       </div>
 
-      <div className="no-scrollbar min-h-0 flex-1 overflow-y-auto px-3 pb-5">
+      <div className="no-scrollbar min-h-0 flex-1 overflow-y-auto px-3 py-4">
         {groups.map((group) => {
           const items = visible.filter((n) => n.group === group);
           // A group whose every entry is hidden by role hides its heading too,
@@ -188,7 +197,7 @@ export function Sidebar({
           return (
             <div key={group} className="mt-5 first:mt-0">
               {collapsed ? null : (
-                <p className="px-3 pb-2 text-[10px] font-bold uppercase tracking-[0.12em] text-faint">
+                <p className="px-2.5 pb-2 text-[11px] font-medium uppercase tracking-[0.08em] text-faint">
                   {GROUP_LABELS[group]}
                 </p>
               )}
@@ -211,8 +220,13 @@ export function Sidebar({
         })}
 
         <div className="mt-6">
-          {collapsed ? null : (
-            <p className="px-3 pb-2 text-[10px] font-bold uppercase tracking-[0.12em] text-faint">Accounts</p>
+          {collapsed ? (
+            <div className="mx-auto mb-3 h-px w-6 bg-line" />
+          ) : (
+            <p className="flex items-center justify-between px-2.5 pb-2 text-[11px] font-medium uppercase tracking-[0.08em] text-faint">
+              Accounts
+              <span className="font-normal normal-case tracking-normal">free / total</span>
+            </p>
           )}
           {accounts.length ? (
             <div className="space-y-0.5">
@@ -222,12 +236,12 @@ export function Sidebar({
                   href={`/environments?account=${encodeURIComponent(account.id)}`}
                   title={collapsed ? `${account.displayName}: ${account.free}/${account.total} free` : undefined}
                   aria-label={collapsed ? `${account.displayName}: ${account.free}/${account.total} free` : undefined}
-                  className={`flex items-center rounded-xl py-2 transition hover:bg-subtle ${
-                    collapsed ? "justify-center px-2" : "gap-3 px-3"
+                  className={`flex items-center rounded-xl transition-colors hover:bg-subtle-2 ${
+                    collapsed ? "justify-center px-1 py-1" : "h-8 gap-2.5 px-2.5"
                   }`}
                 >
                   {collapsed ? (
-                    <span className="relative grid h-9 w-9 place-items-center rounded-xl bg-subtle-2 text-[10px] font-bold tracking-wide text-ink-2 ring-1 ring-line-soft">
+                    <span className="relative grid h-8 w-8 place-items-center rounded-md border border-line bg-surface text-[10px] font-semibold text-ink-2">
                       {accountShortcut(account.displayName)}
                       <span
                         className={`absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full ring-2 ring-canvas ${
@@ -242,8 +256,8 @@ export function Sidebar({
                           account.worst === "issue" ? "bg-bad" : account.free ? "bg-ok" : "bg-warn"
                         }`}
                       />
-                      <span className="flex-1 truncate text-sm font-medium text-ink-2">{account.displayName}</span>
-                      <span className="text-[11px] font-semibold text-faint">
+                      <span className="min-w-0 flex-1 truncate text-[13px] text-body">{account.displayName}</span>
+                      <span className="font-mono text-[11px] tabular-nums text-faint">
                         {account.free}/{account.total}
                       </span>
                     </>
@@ -257,124 +271,79 @@ export function Sidebar({
         </div>
       </div>
 
-      <div className="relative shrink-0 border-t border-line p-3" ref={user_menu_ref}>
-        {user_menu_open ? (
-          <div
-            id="sidebar-user-navigation"
-            role="menu"
-            className={`absolute z-50 overflow-hidden rounded-2xl bg-surface shadow-[0_20px_60px_rgba(0,0,0,0.2)] ring-1 ring-line-2 ${
-              collapsed ? "bottom-0 left-full ml-2 w-60" : "bottom-full left-3 right-3 mb-2"
-            }`}
-          >
-            <div className="border-b border-line bg-panel px-4 py-3">
-              <p className="truncate text-sm font-bold text-ink">{user.displayName}</p>
-              <p className="mt-0.5 truncate text-[11px] text-faint">
-                @{user.username} · {roleLabel(user.role)}
-              </p>
-            </div>
-
-            {footer_items.length ? (
-              <nav aria-label="User and settings" className="space-y-0.5 border-b border-line p-2">
-                {footer_items.map((item) => (
-                  <NavLink
-                    key={item.href}
-                    item={item}
-                    counts={counts}
-                    active={pathname === item.href || pathname.startsWith(`${item.href}/`)}
-                    onNavigate={() => setUserMenuOpen(false)}
-                    liveUnread={liveUnread}
-                  />
-                ))}
-              </nav>
-            ) : null}
-
-            <div className="p-2">
-              <button
-                type="button"
-                onClick={() => {
-                  setUserMenuOpen(false);
-                  setAvatarOpen(true);
-                }}
-                className="flex min-h-10 w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-xs font-semibold text-body transition hover:bg-subtle hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
-              >
-                <Icon name="users" className="h-3.5 w-3.5 shrink-0 text-faint" />
-                Profile picture
-              </button>
-              {install_available ? (
-                <button
-                  type="button"
-                  role="menuitem"
-                  onClick={() => {
-                    void install();
-                    setUserMenuOpen(false);
-                    user_menu_trigger_ref.current?.focus();
-                  }}
-                  className="flex min-h-10 w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-xs font-semibold text-body transition hover:bg-subtle hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
-                >
-                  <Icon name="plus" className="h-3.5 w-3.5 shrink-0 text-faint" />
-                  Install app
-                </button>
-              ) : null}
-              <button
-                type="button"
-                onClick={() => {
-                  setUserMenuOpen(false);
-                  setPasswordOpen(true);
-                }}
-                className="flex min-h-10 w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-xs font-semibold text-body transition hover:bg-subtle hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
-              >
-                <Icon name="key" className="h-3.5 w-3.5 shrink-0 text-faint" />
-                Change password
-              </button>
-              <button
-                type="button"
-                disabled={signing_out}
-                onClick={signOut}
-                className="flex min-h-10 w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-xs font-semibold text-body transition hover:bg-bad-soft hover:text-bad focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 disabled:opacity-50"
-              >
-                <Icon name="logout" className="h-3.5 w-3.5 shrink-0 text-faint" />
-                {signing_out ? "Signing out…" : "Sign out"}
-              </button>
-            </div>
-          </div>
-        ) : null}
-
-        <button
-          ref={user_menu_trigger_ref}
-          type="button"
-          aria-haspopup="menu"
-          aria-expanded={user_menu_open}
-          aria-controls="sidebar-user-navigation"
-          onClick={() => setUserMenuOpen((value) => !value)}
-          title={collapsed ? user.displayName : undefined}
-          className={`flex w-full items-center rounded-xl py-2 text-left transition hover:bg-subtle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 ${
-            collapsed ? "justify-center px-1" : "gap-2.5 px-2"
-          }`}
-        >
-          <Avatar
-            person={{ id: user.id, name: user.displayName, avatarUrl: avatar_url }}
-            size="h-9 w-9"
-            online={online}
-          />
-          {collapsed ? null : (
-            <span className="min-w-0 flex-1">
-              <span className="block truncate text-xs font-bold leading-tight text-ink-2">
-                {user.displayName}
-              </span>
-              <span className="mt-0.5 block truncate text-[9px] font-semibold uppercase tracking-[0.1em] text-faint">
-                {roleLabel(user.role)}
-              </span>
-            </span>
-          )}
-          {collapsed ? null : (
-            <Icon
-              name="chevron"
-              className={`h-3.5 w-3.5 shrink-0 text-faint transition-transform ${
-                user_menu_open ? "-rotate-90" : "rotate-90"
+      <div className="shrink-0 border-t border-line p-2">
+        {/* Radix places this: above the trigger when the sidebar is open, beside
+            it when collapsed, and flipped if either would leave the viewport. */}
+        <Menu
+          side={collapsed ? "right" : "top"}
+          align={collapsed ? "end" : "start"}
+          className="w-[min(15rem,calc(100vw-1.5rem))]"
+          trigger={
+            <button
+              type="button"
+              aria-label={collapsed ? `Account: ${user.displayName}` : undefined}
+              className={`flex w-full items-center rounded-2xl py-2 text-left transition-colors hover:bg-subtle-2 data-[state=open]:bg-subtle-2 ${
+                collapsed ? "justify-center px-1" : "gap-2.5 px-2"
               }`}
-            />
-          )}
-        </button>
+            >
+              <Avatar
+                person={{ id: user.id, name: user.displayName, avatarUrl: avatar_url }}
+                size="h-8 w-8"
+                online={online}
+              />
+              {collapsed ? null : (
+                <span className="min-w-0 flex-1 leading-tight">
+                  <span className="block truncate text-[13px] font-medium text-ink">{user.displayName}</span>
+                  <span className="mt-0.5 block truncate text-xs text-muted">{roleLabel(user.role)}</span>
+                </span>
+              )}
+              {collapsed ? null : (
+                <svg viewBox="0 0 16 16" className="h-3.5 w-3.5 shrink-0 text-faint" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+                  <path d="m5 6 3-3 3 3M5 10l3 3 3-3" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              )}
+            </button>
+          }
+        >
+          <MenuHeader>
+            <p className="truncate text-[13px] font-medium text-ink">{user.displayName}</p>
+            <p className="mt-0.5 truncate text-xs text-muted">
+              @{user.username} · {roleLabel(user.role)}
+            </p>
+          </MenuHeader>
+          <MenuSeparator />
+
+          {footer_items.length ? (
+            <>
+              {footer_items.map((item) => (
+                <MenuLinkItem key={item.href}>
+                  <Link href={item.href}>
+                    <Icon name={item.icon} className="h-3.5 w-3.5 shrink-0 text-faint" />
+                    <span className="min-w-0 flex-1 truncate">{item.label}</span>
+                    <Badge item={item} counts={counts} liveUnread={liveUnread} />
+                  </Link>
+                </MenuLinkItem>
+              ))}
+              <MenuSeparator />
+            </>
+          ) : null}
+
+          <MenuItem icon="users" onSelect={() => setAvatarOpen(true)}>
+            Profile picture
+          </MenuItem>
+          <MenuItem icon="key" onSelect={() => setPasswordOpen(true)}>
+            Change password
+          </MenuItem>
+          {install_available ? (
+            <MenuItem icon="plus" onSelect={() => void install()}>
+              Install app
+            </MenuItem>
+          ) : null}
+          <MenuSeparator />
+          <MenuItem icon="logout" danger disabled={signing_out} onSelect={signOut}>
+            {signing_out ? "Signing out…" : "Sign out"}
+          </MenuItem>
+        </Menu>
       </div>
 
       {avatar_open ? (

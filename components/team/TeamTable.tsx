@@ -26,7 +26,7 @@ export function AvailabilityChip({ row }: { row: WorkloadRow }) {
   const token = AVAILABILITY[row.availability];
   return (
     <span
-      className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-1 text-[11px] font-semibold ${token.chip}`}
+      className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-semibold ${token.chip}`}
     >
       <span className={`h-1.5 w-1.5 rounded-full ${token.dot}`} />
       {token.label}
@@ -93,15 +93,15 @@ function TicketKeys({
             jiraBaseUrl={jiraBaseUrl}
             source={row.claim.source}
             icon={false}
-            className="shrink-0 text-[11px] font-bold text-brand-fg"
+            className="shrink-0 text-xs font-semibold text-brand-fg"
           />
           <span className="min-w-0 flex-1">
-            <TicketTitle claim={row.claim} lines={1} className="text-[11px] text-body" />
+            <TicketTitle claim={row.claim} lines={1} className="text-xs text-body" />
           </span>
         </li>
       ))}
       {rows.length > shown.length ? (
-        <li className="text-[11px] text-faint">+{rows.length - shown.length} more</li>
+        <li className="text-xs text-faint">+{rows.length - shown.length} more</li>
       ) : null}
     </ul>
   );
@@ -164,7 +164,7 @@ export function TeamTable({
                 <Avatar person={row.person} size="h-9 w-9" />
                 <div className="min-w-0">
                   <p className="truncate text-sm font-semibold">{row.person.name}</p>
-                  <p className="truncate text-[11px] text-faint">
+                  <p className="truncate text-xs text-faint">
                     {row.person.unmatched ? (
                       <span className="text-warn">No one on the board answers to this name</span>
                     ) : (
@@ -178,7 +178,7 @@ export function TeamTable({
             <Td>
               <AvailabilityChip row={row} />
               {row.overdue ? (
-                <p className="mt-1 text-[10px] font-bold text-warn">
+                <p className="mt-1 text-[11px] font-semibold text-warn">
                   {row.overdue} overdue
                 </p>
               ) : null}
@@ -190,7 +190,7 @@ export function TeamTable({
                   <p className="truncate text-xs font-semibold text-body">
                     {row.environments.join(", ") || "—"}
                   </p>
-                  <p className="mt-0.5 text-[11px] text-faint">
+                  <p className="mt-0.5 text-xs text-faint">
                     {row.holding.length} ticket{row.holding.length === 1 ? "" : "s"} ·{" "}
                     {row.repoCount} repositor{row.repoCount === 1 ? "y" : "ies"}
                   </p>
@@ -206,7 +206,7 @@ export function TeamTable({
             <Td>
               {row.open.length ? (
                 <div className="min-w-0">
-                  <p className="text-[11px] text-faint">
+                  <p className="text-xs text-faint">
                     {row.open.length} live ticket{row.open.length === 1 ? "" : "s"}
                   </p>
                   <div className="mt-1">
@@ -244,7 +244,7 @@ export function TeamTable({
                 {row.loginId ? (
                   <PresenceCell userId={row.loginId} lastSeenAt={row.lastSeenAt} />
                 ) : (
-                  <span className="text-[11px] text-faintest" title="No sign-in account">
+                  <span className="text-xs text-faintest" title="No sign-in account">
                     —
                   </span>
                 )}
@@ -255,7 +255,7 @@ export function TeamTable({
               {linkRows ? (
                 <Link
                   href={`/team/${encodeURIComponent(row.person.id)}`}
-                  className="inline-flex items-center gap-1 whitespace-nowrap rounded-lg px-2.5 py-1.5 text-[11px] font-semibold text-muted ring-1 ring-line-2 transition hover:text-brand-fg hover:ring-brand-soft"
+                  className="inline-flex items-center gap-1 whitespace-nowrap rounded-lg px-2.5 py-1.5 text-xs font-semibold text-muted ring-1 ring-line-2 transition hover:text-brand-fg hover:ring-brand-soft"
                 >
                   Tickets
                   <Icon name="chevron" className="h-3 w-3" />

@@ -69,7 +69,7 @@ export function JiraAutoSync({ interval_minutes }: { interval_minutes: number })
 
     return (
         <span
-            className={`inline-flex items-center gap-1.5 text-[11px] font-semibold ${
+            className={`inline-flex items-center gap-1.5 text-xs font-semibold ${
                 sync_state === "retrying" ? "text-warn" : "text-faint"
             }`}
             role="status"

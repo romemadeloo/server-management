@@ -89,8 +89,8 @@ function FilterLink({
   return (
     <Link
       href={href(search, { [param]: value })}
-      className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[11px] font-semibold transition ${
-        active ? "bg-accent text-on-accent" : "bg-surface text-muted ring-1 ring-line-2 hover:text-ink"
+      className={`inline-flex h-7 items-center gap-1.5 whitespace-nowrap rounded-md border px-2.5 text-xs font-medium transition-colors ${
+        active ? "border-brand-500 bg-brand-soft text-brand-fg" : "border-line-2 bg-surface text-body hover:border-faintest hover:text-ink"
       }`}
     >
       {dot ? <span className={`h-1.5 w-1.5 rounded-full ${dot}`} /> : null}
@@ -251,13 +251,13 @@ export default async function HealthPage({ searchParams }: { searchParams: Promi
             widget the browser opens on its own, so the account picker costs
             nothing and still works with JS off. */}
         <details className="relative">
-          <summary className="inline-flex cursor-pointer list-none items-center gap-1.5 rounded-full bg-surface px-3.5 py-1.5 text-[11px] font-semibold text-muted ring-1 ring-line-2 transition hover:text-ink [&::-webkit-details-marker]:hidden">
+          <summary className="inline-flex cursor-pointer list-none items-center gap-1.5 rounded-full bg-surface px-3.5 py-1.5 text-xs font-semibold text-muted ring-1 ring-line-2 transition hover:text-ink [&::-webkit-details-marker]:hidden">
             {account ? account.name : "Every account"}
             <span aria-hidden className="text-faintest">
               ▾
             </span>
           </summary>
-          <div className="absolute left-0 z-20 mt-1.5 max-h-80 w-60 overflow-y-auto rounded-xl bg-surface p-1 shadow-lg ring-1 ring-line">
+          <div className="absolute left-0 z-20 mt-1.5 max-h-80 w-60 overflow-y-auto rounded-md bg-surface p-1 shadow-lg ring-1 ring-line">
             <Link
               href={href(search, { account: "all" })}
               className={`flex items-center justify-between gap-3 rounded-lg px-3 py-2 text-xs font-semibold transition hover:bg-subtle ${
@@ -265,7 +265,7 @@ export default async function HealthPage({ searchParams }: { searchParams: Promi
               }`}
             >
               Every account
-              <span className="text-[10px] text-faint">{counts.totals.account}</span>
+              <span className="text-[11px] text-faint">{counts.totals.account}</span>
             </Link>
             {counts.account.map((entry) => (
               <Link
@@ -276,14 +276,14 @@ export default async function HealthPage({ searchParams }: { searchParams: Promi
                 }`}
               >
                 <span className="truncate">{entry.name}</span>
-                <span className="text-[10px] text-faint">{entry.count}</span>
+                <span className="text-[11px] text-faint">{entry.count}</span>
               </Link>
             ))}
           </div>
         </details>
 
         {filtered || isRepoSort(search.sort) ? (
-          <Link href="/health" className="ml-1 text-[11px] font-semibold text-brand-fg hover:underline">
+          <Link href="/health" className="ml-1 text-xs font-semibold text-brand-fg hover:underline">
             Reset
           </Link>
         ) : null}

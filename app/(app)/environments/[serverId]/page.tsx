@@ -118,19 +118,19 @@ export default async function EnvironmentDetailPage({
                         target="_blank"
                         rel="noopener noreferrer"
                         title={`${repo.repoName}\n${repo.url}`}
-                        className="rounded-md bg-subtle-2 px-2 py-0.5 text-[10px] font-bold tracking-wide text-muted transition hover:brightness-110 hover:ring-2 hover:ring-brand-300"
+                        className="rounded-md bg-subtle-2 px-2 py-0.5 text-[11px] font-semibold tracking-wide text-muted transition hover:brightness-110 hover:ring-2 hover:ring-brand-300"
                       >
                         {shortRepo(repo.repoName)}
                       </a>
                     ) : (
                       <span
                         title={`${repo.repoName}: no URL configured`}
-                        className="rounded-md bg-subtle-2 px-2 py-0.5 text-[10px] font-bold tracking-wide text-muted"
+                        className="rounded-md bg-subtle-2 px-2 py-0.5 text-[11px] font-semibold tracking-wide text-muted"
                       >
                         {shortRepo(repo.repoName)}
                       </span>
                     )}
-                    <h3 className="truncate text-sm font-bold">{repo.repoName}</h3>
+                    <h3 className="truncate text-sm font-semibold">{repo.repoName}</h3>
                   </div>
                   <div className="mt-2">
                     <HealthChip health={repo.health} />
@@ -156,9 +156,9 @@ export default async function EnvironmentDetailPage({
                 )}
 
                 {repo.healthCheckedAt ? (
-                  <p className="text-[11px] text-faint">Checked {agoText(repo.healthCheckedAt)} ago</p>
+                  <p className="text-xs text-faint">Checked {agoText(repo.healthCheckedAt)} ago</p>
                 ) : (
-                  <p className="text-[11px] text-faint">Never checked</p>
+                  <p className="text-xs text-faint">Never checked</p>
                 )}
               </div>
 
@@ -170,18 +170,18 @@ export default async function EnvironmentDetailPage({
                       {holders.map((holder) => {
                         const left = minutesLeft(holder);
                         return (
-                          <li key={holder.id} className="rounded-xl bg-subtle px-3 py-2.5">
+                          <li key={holder.id} className="rounded-md bg-subtle px-3 py-2.5">
                             <div className="flex flex-wrap items-center gap-1.5">
                               <TicketLink
                                 ticketKey={holder.id}
                                 source={holder.source}
                                 jiraBaseUrl={jiraBaseUrl}
-                                className="text-[11px] font-bold text-brand-fg"
+                                className="text-xs font-semibold text-brand-fg"
                                 iconClassName="h-2.5 w-2.5 opacity-60"
                               />
                               <JiraChip status={holder.status} />
                               <span
-                                className={`ml-auto whitespace-nowrap text-[11px] font-semibold ${
+                                className={`ml-auto whitespace-nowrap text-xs font-semibold ${
                                   left !== null && left <= 0
                                     ? "text-bad"
                                     : isUrgent(left)
@@ -202,7 +202,7 @@ export default async function EnvironmentDetailPage({
                     {/* More than one claim on one repo is legal, and the legacy
                         UI called it "Shared". Worth saying out loud. */}
                     {holders.length > 1 ? (
-                      <p className="mt-1.5 text-[11px] font-medium text-warn">
+                      <p className="mt-1.5 text-xs font-medium text-warn">
                         Shared by {holders.length} tickets
                       </p>
                     ) : null}
@@ -213,7 +213,7 @@ export default async function EnvironmentDetailPage({
               </div>
 
               {repo.note ? (
-                <p className="mt-3 rounded-xl bg-subtle px-3 py-2 text-xs leading-relaxed text-body">
+                <p className="mt-3 rounded-md bg-subtle px-3 py-2 text-xs leading-relaxed text-body">
                   {repo.note}
                 </p>
               ) : null}
@@ -224,7 +224,7 @@ export default async function EnvironmentDetailPage({
 
       {/* ---- claims on this environment ---- */}
       <section className="mt-7">
-        <h2 className="pb-4 text-[17px] font-bold tracking-tight">
+        <h2 className="pb-4 text-[17px] font-semibold">
           Claims on {row.name}
           <span className="ml-2 text-xs font-semibold text-faint">{row.claims.length}</span>
         </h2>
@@ -267,7 +267,7 @@ export default async function EnvironmentDetailPage({
                 </Td>
                 <Td className="align-top">
                   {claim.startTime || claim.endTime ? (
-                    <span className="whitespace-nowrap text-[11px] text-muted">
+                    <span className="whitespace-nowrap text-xs text-muted">
                       {formatDateTime(claim.startTime) ?? "—"} → {formatDateTime(claim.endTime) ?? "—"}
                     </span>
                   ) : (

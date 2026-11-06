@@ -83,36 +83,36 @@ export function Topbar({
   }, []);
 
   return (
-    <header className="relative z-30 flex h-[72px] shrink-0 items-center gap-3 border-b border-line bg-surface/95 px-4 shadow-[0_1px_0_rgba(0,0,0,0.02)] backdrop-blur-xl sm:px-6">
+    <header className="relative z-30 flex h-16 shrink-0 items-center gap-3 border-b border-line bg-transparent px-4 sm:px-6 lg:px-8">
       <label className="group relative min-w-0 flex-1 sm:max-w-xl">
         <span className="sr-only">Search environments, tickets, or people</span>
         <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-faint transition-colors group-focus-within:text-brand-fg">
-          <Icon name="search" className="h-4.5 w-4.5" />
+          <Icon name="search" className="h-4 w-4" />
         </span>
         <input
           ref={searchRef}
           value={term}
           onChange={(event) => setTerm(event.target.value)}
           placeholder="Search environments, tickets, people…"
-          className="h-11 w-full rounded-2xl bg-subtle pl-10 pr-11 text-sm font-medium text-ink-2 ring-1 ring-transparent transition placeholder:font-normal placeholder:text-faint focus:bg-surface focus:outline-none focus:ring-2 focus:ring-brand-500"
+          className="h-10 w-full rounded-full border border-line-2 bg-subtle pl-10 pr-10 text-[13px] text-ink transition-[border-color,box-shadow,background-color] placeholder:text-faint hover:border-line-2 focus:border-brand-500 focus:bg-surface focus:outline-none focus:ring-[3px] focus:ring-brand-500/15"
         />
         {term ? (
           <button
             type="button"
             onClick={() => setTerm("")}
             aria-label="Clear search"
-            className="absolute right-2 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-lg text-faint transition hover:bg-subtle-2 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+            className="absolute right-2 top-1/2 grid h-6 w-6 -translate-y-1/2 place-items-center rounded-full text-faint transition-colors hover:bg-subtle-2 hover:text-ink"
           >
             <Icon name="close" className="h-3.5 w-3.5" />
           </button>
         ) : (
-          <kbd className="pointer-events-none absolute right-3 top-1/2 hidden -translate-y-1/2 rounded-md bg-surface px-1.5 py-0.5 font-sans text-[10px] font-bold text-faint ring-1 ring-line-2 xl:block">
+          <kbd className="pointer-events-none absolute right-3 top-1/2 hidden h-5 min-w-5 -translate-y-1/2 place-items-center rounded-md border border-line-2 bg-surface px-1 font-mono text-[11px] text-muted xl:grid">
             /
           </kbd>
         )}
       </label>
 
-      <div className="ml-auto flex shrink-0 items-center gap-2">
+      <div className="ml-auto flex shrink-0 items-center gap-1.5">
         <div className="hidden items-center lg:flex">
           <ConnectionDot />
         </div>

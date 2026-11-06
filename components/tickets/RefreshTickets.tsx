@@ -67,7 +67,7 @@ export function RefreshTickets({
         <Icon name="refresh" className={`h-3.5 w-3.5 ${busy ? "animate-spin" : ""}`} />
         {busy ? "Fetching…" : "Refresh from Jira"}
       </Button>
-      <span className="text-[11px] text-faint" role="status">
+      <span className="text-xs text-faint" role="status">
         {message ?? (jiraEnabled ? "Pulls the board now, then reloads this list" : "Jira is switched off")}
       </span>
     </div>

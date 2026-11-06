@@ -113,7 +113,7 @@ export function NewConversationDialog({
         autoComplete="off"
       />
 
-      <div className="mt-3 max-h-64 space-y-1 overflow-y-auto rounded-xl bg-subtle p-2">
+      <div className="mt-3 max-h-64 space-y-1 overflow-y-auto rounded-md bg-subtle p-2">
         {matches.length ? (
           matches.map((p) => {
             const on = selected.includes(p.id);
@@ -134,7 +134,7 @@ export function NewConversationDialog({
                 />
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-sm font-semibold">{p.displayName}</span>
-                  <span className="block truncate text-[11px] text-faint">@{p.username}</span>
+                  <span className="block truncate text-xs text-faint">@{p.username}</span>
                 </span>
                 <RoleChip role={p.role} />
               </button>
@@ -151,7 +151,7 @@ export function NewConversationDialog({
       </div>
 
       {selected.length > 1 ? (
-        <p className="mt-3 text-[11px] text-faint">
+        <p className="mt-3 text-xs text-faint">
           {selected.length} people selected — this will create a group.
         </p>
       ) : null}

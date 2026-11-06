@@ -60,11 +60,11 @@ export function TicketKanban({
           <section
             key={key}
             aria-label={label}
-            className="flex w-72 shrink-0 flex-col rounded-xl bg-subtle ring-1 ring-line-2"
+            className="flex w-72 shrink-0 flex-col rounded-md bg-subtle ring-1 ring-line-2"
           >
             <header className="flex items-center justify-between gap-2 px-3 py-2.5">
               <Chip className={jiraChip(label)}>{label}</Chip>
-              <span className="text-[11px] font-bold text-muted">{cards.length}</span>
+              <span className="text-xs font-semibold text-muted">{cards.length}</span>
             </header>
 
             <div className="flex flex-col gap-2 px-2 pb-2">
@@ -90,7 +90,7 @@ export function TicketKanban({
                             <span className="font-normal text-faint"> · {row.accountName}</span>
                           </Link>
                         ) : (
-                          <p className="truncate text-[11px] text-warn">Not matched to an environment</p>
+                          <p className="truncate text-xs text-warn">Not matched to an environment</p>
                         )}
                       </div>
 
@@ -116,7 +116,7 @@ export function TicketKanban({
                   );
                 })
               ) : (
-                <p className="px-1 py-3 text-center text-[11px] text-faint">Nothing here</p>
+                <p className="px-1 py-3 text-center text-xs text-faint">Nothing here</p>
               )}
             </div>
           </section>

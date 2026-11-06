@@ -53,9 +53,9 @@ export function MentionPicker({
     <div
       // Above the composer: the composer is at the bottom of the viewport, so a
       // list below it would open off-screen.
-      className="absolute bottom-full left-0 z-30 mb-1 w-72 max-w-[calc(100vw-2rem)] overflow-hidden rounded-2xl bg-surface shadow-xl ring-1 ring-line"
+      className="absolute bottom-full left-0 z-30 mb-1 w-72 max-w-[calc(100vw-2rem)] overflow-hidden rounded-lg bg-surface shadow-overlay ring-1 ring-line"
     >
-      <p className="border-b border-line px-3 py-1.5 text-[10px] font-bold uppercase tracking-wide text-faint">
+      <p className="border-b border-line px-3 py-1.5 text-xs font-medium text-muted">
         Mention someone
       </p>
 
@@ -88,7 +88,7 @@ export function MentionPicker({
                 />
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-xs font-semibold">{member.displayName}</span>
-                  <span className="block truncate text-[10px] text-faint">
+                  <span className="block truncate text-[11px] text-faint">
                     {MEMBER_ROLE_LABEL[member.memberRole]}
                   </span>
                 </span>

@@ -1,8 +1,27 @@
 import type { Metadata, Viewport } from "next";
+import { IBM_Plex_Mono, Inter } from "next/font/google";
 import NextTopLoader from "nextjs-toploader";
 import { ServiceWorkerRegister } from "@/components/pwa/ServiceWorkerRegister";
 import { InstallPromptProvider } from "@/components/pwa/InstallPromptProvider";
 import "./globals.css";
+
+/*
+  Self-hosted at build time by next/font rather than linked from Google at run
+  time: no third-party request on every page view, no layout shift while the
+  face arrives, and the fallback metrics are adjusted to match.
+*/
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+const plex_mono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-plex-mono",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Glophics Portal",
@@ -39,7 +58,9 @@ try {
   var palette = localStorage.getItem("serverManager.colorTheme");
   var mode = localStorage.getItem("serverManager.theme");
   if (palettes.indexOf(palette) < 0) palette = "violet";
-  if (modes.indexOf(mode) < 0) mode = "system";
+  // No stored choice means dark: the board is designed dark-first, and a
+  // person who prefers light picks it once in Appearance.
+  if (modes.indexOf(mode) < 0) mode = "dark";
   var dark = mode === "dark" || (mode === "system" && matchMedia("(prefers-color-scheme: dark)").matches);
   document.documentElement.dataset.theme = palette;
   document.documentElement.classList.toggle("dark", dark);
@@ -66,14 +87,12 @@ try {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="h-full" suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`h-full ${inter.variable} ${plex_mono.variable}`}
+      suppressHydrationWarning
+    >
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
       </head>
       {/* overflow-hidden guarantees only the sidebar and main pane scroll, never

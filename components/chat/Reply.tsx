@@ -53,7 +53,7 @@ function QuoteBody({
       ) : null}
 
       <span
-        className={`flex min-w-0 flex-1 items-center gap-1 truncate text-[11px] ${
+        className={`flex min-w-0 flex-1 items-center gap-1 truncate text-xs ${
           tone === "onBrand" ? "text-white/75" : "text-faint"
         }`}
       >
@@ -89,7 +89,7 @@ export function ReplyComposerChip({
   return (
     <div className="flex items-center gap-2 border-t border-line px-3 pt-2.5">
       <div className="flex min-w-0 flex-1 items-center gap-2 rounded-r-lg border-l-2 border-brand-500 bg-subtle py-1.5 pl-2.5 pr-2">
-        <span className="shrink-0 text-[10px] font-bold uppercase tracking-wide text-brand-fg">
+        <span className="shrink-0 text-[11px] font-semibold text-brand-fg">
           Replying to
         </span>
         <QuoteBody

@@ -8,7 +8,9 @@ import type { EnvStatus, RepoHealth } from "@/lib/types";
 export function Chip({ className, children }: { className: string; children: React.ReactNode }) {
   return (
     <span
-      className={`inline-block whitespace-nowrap rounded-md px-2 py-1 text-[10px] font-bold tracking-wide ${className}`}
+      // A small pill with an edge in its own colour (ring-current), so a
+      // status reads as a label on the data, not a button.
+      className={`inline-flex h-5 items-center whitespace-nowrap rounded-full px-2 text-[11px] font-medium leading-none ring-1 ring-inset ring-current/25 ${className}`}
     >
       {children}
     </span>
@@ -21,7 +23,7 @@ export function StatusChip({ status }: { status: EnvStatus }) {
   const token = ENV_STATE[status];
   return (
     <span
-      className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-1 text-[11px] font-semibold ${token.chip}`}
+      className={`inline-flex h-6 items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 text-xs font-medium ring-1 ring-inset ring-current/25 ${token.chip}`}
     >
       <span className={`h-1.5 w-1.5 rounded-full ${token.dot}`} />
       {token.label}
@@ -33,7 +35,7 @@ export function HealthChip({ health }: { health: RepoHealth }) {
   const token = HEALTH[health];
   return (
     <span
-      className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-1 text-[11px] font-semibold ${token.chip}`}
+      className={`inline-flex h-6 items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 text-xs font-medium ring-1 ring-inset ring-current/25 ${token.chip}`}
     >
       <span className={`h-1.5 w-1.5 rounded-full ${token.dot}`} />
       {token.label}
@@ -73,17 +75,15 @@ export function FilterChip({
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`inline-flex items-center gap-2 whitespace-nowrap rounded-full px-3 py-1.5 text-[11px] font-semibold transition ${
+      className={`inline-flex h-8 items-center gap-1.5 whitespace-nowrap rounded-full border px-3.5 text-xs font-medium transition-colors ${
         active
-          ? "bg-brand-500 text-white"
-          : "bg-surface text-muted ring-1 ring-line-2 hover:text-brand-fg hover:ring-brand-soft"
+          ? "border-brand-500/50 bg-brand-soft text-brand-fg"
+          : "border-line-2 bg-subtle text-body hover:border-faintest hover:text-ink"
       }`}
     >
       {label}
       <span
-        className={`rounded-full px-1.5 text-[10px] font-bold ${
-          active ? "bg-white/20 text-white" : "bg-subtle-2 text-muted"
-        }`}
+        className={`tabular-nums ${active ? "text-brand-fg" : "text-faint"}`}
       >
         {count}
       </span>
@@ -92,7 +92,7 @@ export function FilterChip({
 }
 
 export function Muted({ children }: { children: React.ReactNode }) {
-  return <span className="text-xs text-faint">{children}</span>;
+  return <span className="text-xs text-muted">{children}</span>;
 }
 
 /** The em-dash placeholder used wherever a cell has nothing to show. */
@@ -130,16 +130,17 @@ export function FilterLink({
     <Link
       href={href}
       aria-current={active ? "true" : undefined}
-      className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 py-1.5 text-[11px] font-semibold transition ${
-        active ? "bg-accent text-on-accent" : "bg-surface text-muted ring-1 ring-line-2 hover:text-ink"
+      className={`inline-flex h-8 items-center gap-1.5 whitespace-nowrap rounded-full border px-3.5 text-xs font-medium transition-colors ${
+        active
+          ? "border-brand-500/50 bg-brand-soft text-brand-fg"
+          : "border-line-2 bg-subtle text-body hover:border-faintest hover:text-ink"
       }`}
     >
       {dot ? <span className={`h-1.5 w-1.5 rounded-full ${dot}`} /> : null}
-      {/* The count rides in the label rather than in a pill of its own: a pill
-          would need a background that works on `bg-accent` as well as on
-          `bg-surface`, and every colour that does is a literal one. */}
       {label}
-      {count === undefined ? "" : ` ${count}`}
+      {count === undefined ? null : (
+        <span className={`tabular-nums ${active ? "text-brand-fg" : "text-faint"}`}>{count}</span>
+      )}
     </Link>
   );
 }

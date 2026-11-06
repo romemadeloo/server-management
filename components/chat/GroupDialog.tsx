@@ -300,12 +300,12 @@ export function GroupDialog({
                   </Button>
                 ) : null}
               </div>
-              <p className="mt-1.5 text-[10px] text-faintest">
+              <p className="mt-1.5 text-[11px] text-faintest">
                 PNG, JPEG, WebP, GIF or AVIF, under 1 MB. Resized to 256px.
               </p>
             </>
           ) : (
-            <p className="text-[11px] text-faint">
+            <p className="text-xs text-faint">
               Only the owner or an admin can change the group name and photo.
             </p>
           )}
@@ -344,8 +344,8 @@ export function GroupDialog({
 
       {/* ---------- members ---------- */}
       <div className="mt-6">
-        <h3 className="text-xs font-bold tracking-tight">Members</h3>
-        <div className="mt-2 divide-y divide-line rounded-xl bg-subtle">
+        <h3 className="text-xs font-semibold">Members</h3>
+        <div className="mt-2 divide-y divide-line rounded-md bg-subtle">
           {detail.members.map((member) => {
             const mine = member.id === viewerId;
             const removable = canRemoveMember(viewerRole, member.memberRole, { samePerson: mine });
@@ -362,7 +362,7 @@ export function GroupDialog({
                     {member.displayName}
                     {mine ? <span className="font-normal text-faint"> (you)</span> : null}
                   </span>
-                  <span className="block truncate text-[11px] text-faint">
+                  <span className="block truncate text-xs text-faint">
                     {MEMBER_ROLE_LABEL[member.memberRole]}
                   </span>
                 </span>
@@ -399,7 +399,7 @@ export function GroupDialog({
       {/* ---------- adding ---------- */}
       {canManage ? (
         <div className="mt-6">
-          <h3 className="text-xs font-bold tracking-tight">Add people</h3>
+          <h3 className="text-xs font-semibold">Add people</h3>
           <div className="mt-2">
             <Field
               label="Find someone"
@@ -410,7 +410,7 @@ export function GroupDialog({
             />
           </div>
 
-          <div className="mt-2 max-h-48 space-y-1 overflow-y-auto rounded-xl bg-subtle p-2">
+          <div className="mt-2 max-h-48 space-y-1 overflow-y-auto rounded-md bg-subtle p-2">
             {addable === null ? (
               <p className="px-2 py-6 text-center text-xs text-faint">Loading…</p>
             ) : matches.length ? (
@@ -436,7 +436,7 @@ export function GroupDialog({
                     />
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-sm font-semibold">{p.displayName}</span>
-                      <span className="block truncate text-[11px] text-faint">@{p.username}</span>
+                      <span className="block truncate text-xs text-faint">@{p.username}</span>
                     </span>
                   </button>
                 );
@@ -452,7 +452,7 @@ export function GroupDialog({
 
           {selected.length ? (
             <div className="mt-2 flex items-center justify-between gap-2">
-              <p className="text-[11px] text-faint">{selected.length} selected</p>
+              <p className="text-xs text-faint">{selected.length} selected</p>
               <Button
                 size="sm"
                 variant="dark"
@@ -469,8 +469,8 @@ export function GroupDialog({
       {/* ---------- leaving ---------- */}
       <div className="mt-6 border-t border-line pt-4">
         {confirmLeave ? (
-          <div className="rounded-xl bg-bad-soft px-3 py-2.5">
-            <p className="text-[11px] font-semibold text-bad">
+          <div className="rounded-md bg-bad-soft px-3 py-2.5">
+            <p className="text-xs font-semibold text-bad">
               {viewerRole === "owner"
                 ? detail.members.length === 1
                   ? "You are the last member — leaving deletes this group and its messages."

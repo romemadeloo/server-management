@@ -50,9 +50,9 @@ export function ConnectionDot() {
     return (
       <div
         title="Live updates are not configured for this deployment. Changes you make still save; you just need to refresh to see other people's."
-        className="flex h-9 shrink-0 items-center gap-2 rounded-xl bg-subtle px-3 text-xs font-semibold text-muted ring-1 ring-line-soft"
+        className="flex h-8 shrink-0 items-center gap-2 px-1 text-xs font-medium text-muted"
       >
-        <span className="h-2 w-2 shrink-0 rounded-full bg-faintest ring-4 ring-line-soft" />
+        <span className="h-2 w-2 shrink-0 rounded-full bg-faintest" />
         <span className="truncate">Not live</span>
       </div>
     );
@@ -82,9 +82,9 @@ export function ConnectionDot() {
   return (
     <div
       title={token.title}
-      className="flex h-9 shrink-0 items-center gap-2 rounded-xl bg-subtle px-3 text-xs font-semibold text-muted ring-1 ring-line-soft"
+      className="flex h-8 shrink-0 items-center gap-2 px-1 text-xs font-medium text-muted"
     >
-      <span className={`h-2 w-2 shrink-0 rounded-full ring-4 ring-line-soft ${token.dot}`} />
+      <span className={`h-2 w-2 shrink-0 rounded-full ${token.dot}`} />
       <span className="truncate">{token.text}</span>
     </div>
   );

@@ -89,13 +89,13 @@ export default async function NotTrackedPage() {
                   <TicketLink
                     ticketKey={row.key}
                     jiraBaseUrl={jiraBaseUrl}
-                    className="text-xs font-bold text-brand-fg"
+                    className="text-xs font-semibold text-brand-fg"
                   />
                   <div className="mt-1">
                     <TicketTitle claim={{ summary: row.summary, note: null, source: "jira" }} />
                   </div>
                   {row.jiraUpdatedAt ? (
-                    <p className="mt-1 text-[10px] text-faint">Updated {agoText(row.jiraUpdatedAt)} ago</p>
+                    <p className="mt-1 text-[11px] text-faint">Updated {agoText(row.jiraUpdatedAt)} ago</p>
                   ) : null}
                 </div>
               </Td>
@@ -111,7 +111,7 @@ export default async function NotTrackedPage() {
                 <p className="text-sm text-body">
                   {row.accountName || <span className="italic text-bad">Account Name empty</span>}
                 </p>
-                <p className="mt-1 inline-flex rounded bg-subtle-2 px-1.5 py-0.5 font-mono text-[10px] text-body">
+                <p className="mt-1 inline-flex rounded bg-subtle-2 px-1.5 py-0.5 font-mono text-[11px] text-body">
                   {row.branch || <span className="italic text-bad">Branch empty</span>}
                 </p>
               </Td>

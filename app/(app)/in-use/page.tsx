@@ -107,12 +107,12 @@ export default async function InUsePage() {
                   <span className="block truncate text-sm font-semibold group-hover:text-brand-fg group-hover:underline">
                     {row.env}
                   </span>
-                  <span className="block truncate text-[11px] text-faint">{row.accountName}</span>
+                  <span className="block truncate text-xs text-faint">{row.accountName}</span>
                 </Link>
               ) : (
                 <>
                   <p className="truncate text-sm font-semibold text-muted">{row.env}</p>
-                  <p className="truncate text-[11px] text-faint">{row.accountName}</p>
+                  <p className="truncate text-xs text-faint">{row.accountName}</p>
                 </>
               )}
             </Td>

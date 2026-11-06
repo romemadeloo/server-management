@@ -211,8 +211,8 @@ export function HealthButton({
               ? `${label} — old enough to be out of date. Click to check now.`
               : `${label} — click to check now`
       }
-      className={`flex h-9 max-w-[170px] items-center gap-2 rounded-xl bg-subtle px-3 text-xs font-semibold ring-1 transition hover:bg-subtle-2 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-subtle ${
-        stale ? "text-warn ring-warn/30" : "text-muted ring-line-soft disabled:hover:text-muted"
+      className={`flex h-9 max-w-[190px] items-center gap-2 rounded-full border bg-subtle px-3.5 text-xs font-medium transition-colors hover:bg-subtle hover:text-ink disabled:cursor-not-allowed disabled:opacity-50 ${
+        stale ? "border-warn/40 text-warn" : "border-line-2 text-body hover:border-faintest"
       }`}
     >
       <Icon

@@ -173,7 +173,7 @@ export default async function MyTicketsPage({ searchParams }: { searchParams: Pr
           the pager hides itself on a single page. It still renders while a
           filter is on, or a narrowed view could have no way back. */}
       <div className="flex items-center gap-2 pb-3">
-        <span className="text-[11px] font-semibold text-faint">View</span>
+        <span className="text-xs font-semibold text-faint">View</span>
         <FilterLink href={ticketsHref({})} label="Board" active={board} />
         <FilterLink href={ticketsHref({ view: "table" })} label="Table" active={!board} />
       </div>
@@ -195,7 +195,7 @@ export default async function MyTicketsPage({ searchParams }: { searchParams: Pr
           {selected ? (
             <Link
               href={ticketsHref({ view: "table" })}
-              className="ml-1 text-[11px] font-semibold text-brand-fg hover:underline"
+              className="ml-1 text-xs font-semibold text-brand-fg hover:underline"
             >
               Reset
             </Link>
@@ -203,7 +203,7 @@ export default async function MyTicketsPage({ searchParams }: { searchParams: Pr
         </div>
       ) : null}
 
-      <p className="pb-5 text-[11px] text-faint">
+      <p className="pb-5 text-xs text-faint">
         Every status, including{" "}
         {hiddenElsewhere.length ? (
           <>

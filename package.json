@@ -39,6 +39,7 @@
     "nextjs-toploader": "^3.9.17",
     "pusher": "^5.3.4",
     "pusher-js": "^8.6.0",
+    "radix-ui": "^1.8.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1"
   },

@@ -51,7 +51,7 @@ export function TicketTitle({
   const clamp = lines === 1 ? "line-clamp-1" : lines === 2 ? "line-clamp-2" : "line-clamp-3";
 
   if (!title) {
-    return <p className="text-[11px] italic text-faint">{fallbackTitle(claim.source)}</p>;
+    return <p className="text-xs italic text-faint">{fallbackTitle(claim.source)}</p>;
   }
   return (
     <p title={title} className={`${clamp} break-words ${className}`}>
@@ -88,21 +88,21 @@ export function TicketCell({
   const meta: React.ReactNode[] = [];
   if (showBranch && claim.branch) {
     meta.push(
-      <span key="branch" className="rounded bg-subtle-2 px-1.5 py-0.5 font-mono text-[10px] text-body">
+      <span key="branch" className="rounded bg-subtle-2 px-1.5 py-0.5 font-mono text-[11px] text-body">
         {claim.branch}
       </span>,
     );
   }
   if (claim.source === "manual") {
     meta.push(
-      <span key="manual" className="text-[10px] font-semibold text-faint">
+      <span key="manual" className="text-[11px] font-semibold text-faint">
         Manual booking
       </span>,
     );
   }
   if (showUpdated && claim.jiraUpdatedAt) {
     meta.push(
-      <span key="updated" className="whitespace-nowrap text-[10px] text-faint">
+      <span key="updated" className="whitespace-nowrap text-[11px] text-faint">
         Updated {agoText(claim.jiraUpdatedAt)} ago
       </span>,
     );
@@ -115,7 +115,7 @@ export function TicketCell({
           ticketKey={claim.id}
           source={claim.source}
           jiraBaseUrl={jiraBaseUrl}
-          className="text-xs font-bold text-brand-fg"
+          className="text-xs font-semibold text-brand-fg"
         />
         {badge}
         {showStatus ? <JiraChip status={claim.status} /> : null}
@@ -198,7 +198,7 @@ export function BookingCell({
         {expired ? (holding ? "Overdue" : "Past due") : leftText(minutes)}
       </p>
       {claim.startTime ? <BookingBar claim={claim} minutes={minutes} className="mt-1.5 w-full" /> : null}
-      {end ? <p className="mt-1 whitespace-nowrap text-[10px] text-faint">until {end}</p> : null}
+      {end ? <p className="mt-1 whitespace-nowrap text-[11px] text-faint">until {end}</p> : null}
     </div>
   );
 }

@@ -81,8 +81,8 @@ function FilterLink({
   return (
     <Link
       href={href(search, { availability: value })}
-      className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[11px] font-semibold transition ${
-        active ? "bg-accent text-on-accent" : "bg-surface text-muted ring-1 ring-line-2 hover:text-ink"
+      className={`inline-flex h-7 items-center gap-1.5 whitespace-nowrap rounded-md border px-2.5 text-xs font-medium transition-colors ${
+        active ? "border-brand-500 bg-brand-soft text-brand-fg" : "border-line-2 bg-surface text-body hover:border-faintest hover:text-ink"
       }`}
     >
       {dot ? <span className={`h-1.5 w-1.5 rounded-full ${dot}`} /> : null}
@@ -140,7 +140,7 @@ export default async function TeamPage({ searchParams }: { searchParams: Promise
         actions={
           <Link
             href="/users"
-            className="inline-flex items-center rounded-xl px-3.5 py-2 text-xs font-semibold text-muted ring-1 ring-line-2 transition hover:text-brand-fg hover:ring-brand-soft"
+            className="inline-flex items-center rounded-md px-3.5 py-2 text-xs font-semibold text-muted ring-1 ring-line-2 transition hover:text-brand-fg hover:ring-brand-soft"
           >
             Manage people
           </Link>
@@ -249,13 +249,13 @@ export default async function TeamPage({ searchParams }: { searchParams: Promise
               name="q"
               defaultValue={search.q ?? ""}
               placeholder="Name, role, ticket…"
-              className="w-52 rounded-full bg-surface px-3.5 py-1.5 text-[11px] text-body ring-1 ring-line-2 outline-none transition placeholder:text-faint focus:ring-brand-soft"
+              className="w-52 rounded-full bg-surface px-3.5 py-1.5 text-xs text-body ring-1 ring-line-2 outline-none transition placeholder:text-faint focus:ring-brand-soft"
             />
           </label>
           {search.q ? (
             <Link
               href={href(search, { q: "" })}
-              className="text-[11px] font-semibold text-faint transition hover:text-ink"
+              className="text-xs font-semibold text-faint transition hover:text-ink"
             >
               Clear
             </Link>
@@ -311,7 +311,7 @@ export default async function TeamPage({ searchParams }: { searchParams: Promise
         </section>
       ) : null}
 
-      <p className="mt-6 text-[11px] leading-relaxed text-faint">
+      <p className="mt-6 text-xs leading-relaxed text-faint">
         This page reads the board and Jira. It shows <strong>no chat</strong>: conversations are
         readable only by their members, and holding <em>oversee</em> does not change that. Availability
         is derived from claims and live Jira tickets, so somebody with no ticket assigned reads as free

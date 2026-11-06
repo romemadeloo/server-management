@@ -56,7 +56,7 @@ export function Avatar({
       ) : (
         <span
           title={person.name}
-          className={`grid ${size} shrink-0 place-items-center rounded-full text-[10px] font-bold ring-2 ring-surface ${avatarTone(
+          className={`grid ${size} shrink-0 place-items-center rounded-full text-[11px] font-semibold ring-2 ring-surface ${avatarTone(
             person.id,
           )}`}
         >
@@ -101,7 +101,7 @@ export function PeopleCell({
           {names.map((person) => person.name).join(", ")}
           {rest > 0 ? <span className="font-medium text-faint"> +{rest}</span> : null}
         </p>
-        {unmatched ? <p className="truncate text-[10px] text-warn">Name not in the directory</p> : null}
+        {unmatched ? <p className="truncate text-[11px] text-warn">Name not in the directory</p> : null}
       </div>
     </div>
   );
@@ -120,7 +120,7 @@ export function AvatarStack({ people, max = 3 }: { people: AvatarPerson[]; max?:
           <Avatar key={person.id} person={person} />
         ))}
       </div>
-      {rest > 0 && <span className="ml-2.5 text-[11px] font-semibold text-faint">+{rest}</span>}
+      {rest > 0 && <span className="ml-2.5 text-xs font-semibold text-faint">+{rest}</span>}
     </div>
   );
 }
