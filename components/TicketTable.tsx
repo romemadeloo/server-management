@@ -97,14 +97,14 @@ export function TicketTable({
                   <p className="truncate text-sm font-semibold group-hover:text-brand-fg group-hover:underline">
                     {row.env}
                   </p>
-                  <p className="truncate text-xs text-faint">{row.accountName}</p>
+                  <p className="truncate text-[11px] text-faint">{row.accountName}</p>
                 </Link>
               ) : (
                 <div className="max-w-[12rem]">
                   <p className="truncate text-sm font-semibold text-muted">{row.env}</p>
                   {/* No environment matched, which is the Not-tracked case. Saying
                       so here stops the row reading as a placeholder. */}
-                  <p className="truncate text-xs text-warn">Not matched to an environment</p>
+                  <p className="truncate text-[11px] text-warn">Not matched to an environment</p>
                 </div>
               )}
             </Td>
@@ -118,7 +118,7 @@ export function TicketTable({
                     claims={claims}
                   />
                 ) : (
-                  <span className="text-xs text-faint">Nothing</span>
+                  <span className="text-[11px] text-faint">Nothing</span>
                 )}
               </Td>
             ) : null}

@@ -68,22 +68,22 @@ export function LoginForm({ next, expired }: { next?: string; expired?: boolean 
   return (
     <form className="w-full max-w-sm" onSubmit={onSubmit}>
       <div className="flex items-center gap-2.5 lg:hidden">
-        <span className="grid h-8 w-8 place-items-center rounded-md bg-brand-500 text-on-brand">
-          <Icon name="servers" className="h-4 w-4" />
+        <span className="grid h-9 w-9 place-items-center rounded-xl bg-brand-500 text-white shadow-lg shadow-brand-500/30">
+          <Icon name="servers" className="h-4.5 w-4.5" />
         </span>
-        <span className="text-[15px] font-semibold">Glophics</span>
+        <span className="text-[17px] font-bold tracking-tight">Servers</span>
       </div>
 
-      <h1 className="mt-8 text-xl font-semibold text-ink lg:mt-0">Sign in to Glophics</h1>
-      <p className="mt-1 text-[13px] text-muted">Use the credentials your super admin gave you.</p>
+      <h1 className="mt-8 text-2xl font-bold tracking-tight lg:mt-0">Sign in</h1>
+      <p className="mt-1.5 text-sm text-faint">Use the credentials your super admin gave you.</p>
 
       {expired ? (
-        <p className="mt-4 rounded-md border border-warn/30 bg-warn-soft px-3 py-2 text-[13px] text-warn" role="status">
+        <p className="mt-4 rounded-xl bg-warn-soft px-3.5 py-2.5 text-xs font-medium text-warn">
           Your session has ended — sign in again.
         </p>
       ) : null}
 
-      <div className="mt-6 space-y-4">
+      <div className="mt-7 space-y-4">
         <Field
           label="Username"
           name="username"
@@ -107,7 +107,7 @@ export function LoginForm({ next, expired }: { next?: string; expired?: boolean 
 
       <FormError>{error}</FormError>
 
-      <Button type="submit" variant="primary" size="lg" className="mt-6 w-full" disabled={pending}>
+      <Button type="submit" variant="dark" className="mt-6 w-full py-3" disabled={pending}>
         {pending ? "Signing in…" : "Sign in"}
       </Button>
     </form>

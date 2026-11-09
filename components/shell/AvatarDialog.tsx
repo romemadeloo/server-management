@@ -159,14 +159,14 @@ export function AvatarDialog({
             ) : null}
           </div>
 
-          <p className="mt-2 text-xs leading-relaxed text-faint">
+          <p className="mt-2 text-[11px] leading-relaxed text-faint">
             PNG, JPEG, WebP, GIF or AVIF, <strong>under 1 MB</strong>.
             {file ? ` Selected: ${kb(file.size)}.` : ""}
           </p>
         </div>
       </div>
 
-      <p className="mt-4 rounded-md bg-subtle px-3.5 py-2.5 text-xs leading-relaxed text-muted">
+      <p className="mt-4 rounded-xl bg-subtle px-3.5 py-2.5 text-[11px] leading-relaxed text-muted">
         Your image is resized to 256&times;256 and re-encoded as WebP by the{" "}
         <a
           href="https://media-optimizer.eliesertajanlangit.com/"
@@ -181,7 +181,7 @@ export function AvatarDialog({
       </p>
 
       {saved ? (
-        <p className="mt-3 rounded-md bg-ok-soft px-3.5 py-2.5 text-xs font-medium text-ok">
+        <p className="mt-3 rounded-xl bg-ok-soft px-3.5 py-2.5 text-xs font-medium text-ok">
           Saved — {kb(saved.from)} optimised down to {kb(saved.to)}.
         </p>
       ) : null}

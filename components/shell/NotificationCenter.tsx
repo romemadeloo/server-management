@@ -1,12 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   type JiraNotification,
   useJiraNotifications,
 } from "@/components/providers/JiraNotificationProvider";
 import { Icon } from "@/components/ui/Icon";
-import { Popover } from "@/components/ui/Popover";
 import { agoText } from "@/lib/shared/format";
 
 type NotificationFilter = "all" | JiraNotification["kind"];
@@ -41,7 +40,7 @@ function BrowserNotificationSetting() {
       type="button"
       disabled={denied || enabled}
       onClick={async () => setPermission(await Notification.requestPermission())}
-      className="flex w-full items-center gap-2.5 border-t border-line bg-subtle px-4 py-2.5 text-left text-xs font-medium text-body transition-colors hover:bg-subtle-2 disabled:cursor-default disabled:hover:bg-subtle"
+      className="flex w-full items-center gap-2.5 border-t border-line px-4 py-3 text-left text-xs font-semibold text-muted transition hover:bg-subtle disabled:cursor-default disabled:hover:bg-transparent"
     >
       <Icon name="bell" className="h-3.5 w-3.5" />
       <span className="flex-1">
@@ -60,40 +59,67 @@ export function NotificationCenter() {
   const { history, unread_count, loading, refresh, markRead, markAllRead } = useJiraNotifications();
   const [open, setOpen] = useState(false);
   const [filter, setFilter] = useState<NotificationFilter>("all");
+  const host_ref = useRef<HTMLDivElement>(null);
+  const trigger_ref = useRef<HTMLButtonElement>(null);
   const filtered_history = useMemo(
     () => filter === "all" ? history : history.filter((notification) => notification.kind === filter),
     [history, filter],
   );
 
+  useEffect(() => {
+    if (!open) return;
+
+    function onPointerDown(event: MouseEvent) {
+      if (!host_ref.current?.contains(event.target as Node)) setOpen(false);
+    }
+
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key !== "Escape") return;
+      setOpen(false);
+      trigger_ref.current?.focus();
+    }
+
+    document.addEventListener("mousedown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open]);
+
   return (
-    <Popover
-      label="Notification history"
-      open={open}
-      onOpenChange={(next) => {
-        setOpen(next);
-        if (next) void refresh();
-      }}
-      className="flex max-h-[min(36rem,calc(100dvh-5rem))] w-[min(24rem,calc(100vw-1.5rem))] flex-col overflow-hidden"
-      trigger={
-        <button
-          type="button"
-          aria-label={unread_count ? `Notifications, ${unread_count} unread` : "Notifications"}
-          title="Notification history"
-          className="relative grid h-9 w-9 place-items-center rounded-full border border-line-2 bg-subtle text-muted transition-colors hover:bg-subtle-2 hover:text-ink data-[state=open]:bg-subtle-2 data-[state=open]:text-ink"
+    <div className="relative shrink-0" ref={host_ref}>
+      <button
+        ref={trigger_ref}
+        type="button"
+        aria-haspopup="dialog"
+        aria-expanded={open}
+        aria-label={unread_count ? `Notifications, ${unread_count} unread` : "Notifications"}
+        title="Notification history"
+        onClick={() => {
+          setOpen((current_open) => !current_open);
+          if (!open) void refresh();
+        }}
+        className="relative grid h-10 w-10 place-items-center rounded-xl text-faint ring-1 ring-line-2 transition hover:bg-brand-soft hover:text-brand-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+      >
+        <Icon name="bell" className="h-4 w-4" />
+        {unread_count ? (
+          <span className="absolute -right-1 -top-1 grid min-h-4 min-w-4 place-items-center rounded-full bg-bad px-1 text-[9px] font-extrabold leading-none text-white ring-2 ring-surface">
+            {unread_count > 9 ? "9+" : unread_count}
+          </span>
+        ) : null}
+      </button>
+
+      {open ? (
+        <section
+          role="dialog"
+          aria-label="Notification history"
+          className="absolute right-0 top-full z-50 mt-2 flex max-h-[min(38rem,calc(100vh-6rem))] w-[min(26rem,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl bg-surface shadow-[0_20px_60px_rgba(0,0,0,0.2)] ring-1 ring-line-2"
         >
-          <Icon name="bell" className="h-4 w-4" />
-          {unread_count ? (
-            <span className="absolute -right-0.5 -top-0.5 grid h-4 min-w-4 place-items-center rounded-full bg-bad px-1 text-[10px] font-semibold tabular-nums leading-none text-white ring-2 ring-surface">
-              {unread_count > 9 ? "9+" : unread_count}
-            </span>
-          ) : null}
-        </button>
-      }
-    >
-          <div className="flex items-center gap-3 border-b border-line px-4 py-3">
+          <div className="flex items-center gap-3 border-b border-line px-4 py-3.5">
             <div className="min-w-0 flex-1">
-              <h2 className="text-sm font-semibold text-ink">Notifications</h2>
-              <p className="mt-0.5 text-xs text-muted">
+              <h2 className="text-sm font-bold text-ink">Notifications</h2>
+              <p className="mt-0.5 text-[11px] text-faint">
                 {unread_count ? `${unread_count} unread Jira alert${unread_count === 1 ? "" : "s"}` : "You're all caught up"}
               </p>
             </div>
@@ -101,25 +127,23 @@ export function NotificationCenter() {
               <button
                 type="button"
                 onClick={() => void markAllRead()}
-                className="rounded px-1.5 py-1 text-xs font-medium text-brand-fg transition-colors hover:bg-brand-soft"
+                className="text-[11px] font-semibold text-brand-fg hover:underline"
               >
                 Mark all read
               </button>
             ) : null}
           </div>
 
-          <div role="tablist" aria-label="Filter notifications" className="no-scrollbar flex shrink-0 gap-4 overflow-x-auto border-b border-line px-4">
+          <div className="no-scrollbar flex shrink-0 gap-1 overflow-x-auto border-b border-line-soft px-3 py-2">
             {FILTERS.map((option) => (
               <button
                 key={option.id}
                 type="button"
                 onClick={() => setFilter(option.id)}
-                role="tab"
-                aria-selected={filter === option.id}
-                className={`-mb-px shrink-0 border-b-2 py-2 text-xs font-medium transition-colors ${
+                className={`shrink-0 rounded-full px-3 py-1.5 text-[10px] font-bold transition ${
                   filter === option.id
-                    ? "border-brand-500 text-ink"
-                    : "border-transparent text-muted hover:text-ink"
+                    ? "bg-brand-soft text-brand-fg"
+                    : "text-muted hover:bg-subtle hover:text-ink"
                 }`}
               >
                 {option.label}
@@ -129,7 +153,7 @@ export function NotificationCenter() {
 
           <div className="no-scrollbar min-h-0 flex-1 overflow-y-auto">
             {loading && !history.length ? (
-              <div className="grid min-h-48 place-items-center text-[13px] text-muted">Loading notifications…</div>
+              <div className="grid min-h-48 place-items-center text-xs text-faint">Loading notifications…</div>
             ) : filtered_history.length ? (
               filtered_history.map((notification) => (
                 <a
@@ -138,18 +162,18 @@ export function NotificationCenter() {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => void markRead(notification.id)}
-                  className={`relative flex gap-3 border-b border-line-soft px-4 py-3 transition-colors last:border-0 hover:bg-subtle ${
-                    notification.readAt ? "" : "bg-brand-soft/40"
+                  className={`relative flex gap-3 border-b border-line-soft px-4 py-3.5 transition last:border-0 hover:bg-subtle ${
+                    notification.readAt ? "" : "bg-brand-soft/45"
                   }`}
                 >
-                  <span className={`mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full ${notification.readAt ? "bg-transparent" : "bg-brand-500"}`} />
+                  <span className={`mt-1 h-2 w-2 shrink-0 rounded-full ${notification.readAt ? "bg-faintest" : "bg-brand-500"}`} />
                   <span className="min-w-0 flex-1">
                     <span className="flex items-start gap-2">
-                      <span className="min-w-0 flex-1 truncate text-[13px] font-medium text-ink">{notification.title}</span>
-                      <span className="shrink-0 text-[11px] tabular-nums text-faint">{agoText(notification.createdAt)} ago</span>
+                      <span className="min-w-0 flex-1 truncate text-xs font-bold text-ink-2">{notification.title}</span>
+                      <span className="shrink-0 text-[9px] font-medium text-faint">{agoText(notification.createdAt)} ago</span>
                     </span>
-                    <span className="mt-0.5 line-clamp-2 block text-xs leading-[18px] text-body">{notification.body}</span>
-                    <span className="mt-1.5 inline-flex items-center gap-1.5 font-mono text-[11px] text-muted">
+                    <span className="mt-1 line-clamp-2 block text-[11px] leading-4 text-body">{notification.body}</span>
+                    <span className="mt-2 inline-flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-wide text-brand-fg">
                       {notification.ticketId} · {KIND_LABELS[notification.kind]}
                     </span>
                   </span>
@@ -159,13 +183,15 @@ export function NotificationCenter() {
               <div className="grid min-h-48 place-items-center px-6 text-center">
                 <div>
                   <Icon name="bell" className="mx-auto h-5 w-5 text-faintest" />
-                  <p className="mt-2 text-[13px] text-muted">No notifications in this category</p>
+                  <p className="mt-2 text-xs font-semibold text-muted">No notifications in this category</p>
                 </div>
               </div>
             )}
           </div>
 
           <BrowserNotificationSetting />
-    </Popover>
+        </section>
+      ) : null}
+    </div>
   );
 }

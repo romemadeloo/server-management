@@ -6,7 +6,6 @@ import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Field, FormError, Select } from "@/components/ui/Form";
 import { Card } from "@/components/ui/Layout";
-import { Icon } from "@/components/ui/Icon";
 import { Modal } from "@/components/ui/Modal";
 import { shortRepo } from "@/lib/shared/tokens";
 import type { Account, Environment } from "@/lib/types";
@@ -50,11 +49,11 @@ export function EnvironmentsCard({
             return (
               <div
                 key={env.id}
-                className="flex flex-wrap items-center gap-3 rounded-md bg-subtle px-3.5 py-3"
+                className="flex flex-wrap items-center gap-3 rounded-xl bg-subtle px-3.5 py-3"
               >
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-semibold">{env.name}</p>
-                  <p className="truncate text-xs text-faint">
+                  <p className="truncate text-[11px] text-faint">
                     {account?.displayName ?? "—"} · {configured} of {env.repos.length} URL
                     {env.repos.length === 1 ? "" : "s"} set
                   </p>
@@ -80,7 +79,7 @@ export function EnvironmentsCard({
           Add environment
         </Button>
         {!accounts.length ? (
-          <p className="mt-2 text-xs text-faint">Add an account first — an environment belongs to one.</p>
+          <p className="mt-2 text-[11px] text-faint">Add an account first — an environment belongs to one.</p>
         ) : null}
       </div>
 
@@ -92,44 +91,6 @@ export function EnvironmentsCard({
         <RemoveEnvDialog env={removing} onClose={() => setRemoving(null)} onDone={refresh} />
       ) : null}
     </Card>
-  );
-}
-
-/**
- * "Add environment" as a button that opens the same dialog Settings uses, so
- * the Environments page can add one in place instead of sending you to
- * Settings to find the form. One dialog, two openers: the validation, the
- * repository list and the error copy cannot drift between them.
- *
- * The caller decides whether to render it (`configure`), as courtesy only —
- * POST /api/servers refuses without that capability either way.
- */
-export function AddEnvironmentButton({ accounts }: { accounts: Account[] }) {
-  const router = useRouter();
-  const [open, setOpen] = useState(false);
-
-  return (
-    <>
-      <Button
-        variant="primary"
-        onClick={() => setOpen(true)}
-        disabled={!accounts.length}
-        title={accounts.length ? undefined : "Add an account in Settings first"}
-      >
-        <Icon name="plus" className="h-3.5 w-3.5" />
-        Add environment
-      </Button>
-      {open ? (
-        <EnvDialog
-          accounts={accounts}
-          onClose={() => setOpen(false)}
-          onDone={() => {
-            setOpen(false);
-            router.refresh();
-          }}
-        />
-      ) : null}
-    </>
   );
 }
 
@@ -209,7 +170,7 @@ function EnvDialog({
 
         {repoNames.length ? (
           <div className="space-y-3">
-            <p className="text-xs font-semibold text-muted">Repository URLs</p>
+            <p className="text-[11px] font-semibold text-muted">Repository URLs</p>
             {repoNames.map((repo) => (
               <Field
                 key={repo}
@@ -220,7 +181,7 @@ function EnvDialog({
                 spellCheck={false}
               />
             ))}
-            <p className="text-xs leading-relaxed text-warn">
+            <p className="text-[11px] leading-relaxed text-warn">
               Health checks run from the cloud, so a private hostname like{" "}
               <code className="font-mono">*.internal</code> cannot be reached and will never report
               online. Leave a URL blank to mark that repository as unchecked rather than have it read
@@ -234,7 +195,7 @@ function EnvDialog({
         )}
 
         {env && name.trim() && name !== env.name ? (
-          <p className="rounded-md bg-warn-soft px-3.5 py-2.5 text-xs text-warn">
+          <p className="rounded-xl bg-warn-soft px-3.5 py-2.5 text-xs text-warn">
             Renaming this changes which Jira tickets match it. Claims already recorded here are
             rewritten to the new name, but tickets still filled in with &quot;{env.name}&quot; will stop
             being placed.
@@ -242,7 +203,7 @@ function EnvDialog({
         ) : null}
 
         {movingAccount ? (
-          <p className="rounded-md bg-bad-soft px-3.5 py-2.5 text-xs text-bad">
+          <p className="rounded-xl bg-bad-soft px-3.5 py-2.5 text-xs text-bad">
             Moving this to another account changes which repository slots it carries. Slots the new
             account does not define are removed, along with their URLs, notes and any claim on them.
           </p>

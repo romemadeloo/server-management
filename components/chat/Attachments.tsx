@@ -61,7 +61,7 @@ export function AttachmentGrid({
               type="button"
               onClick={() => onOpenImage(image)}
               title={`${image.filename} — ${formatBytes(image.bytes)}`}
-              className="group/img relative overflow-hidden rounded-md bg-subtle-2 ring-1 ring-line-2 transition hover:ring-brand-soft"
+              className="group/img relative overflow-hidden rounded-xl bg-subtle-2 ring-1 ring-line-2 transition hover:ring-brand-soft"
             >
               {/* A plain <img>, not next/image: these are already re-encoded to a
                   bounded WebP on the way in, and next/image would put its own
@@ -97,14 +97,14 @@ export function AttachmentGrid({
             href={attachmentHref(file.id, { download: kind !== "pdf" })}
             target="_blank"
             rel="noopener noreferrer"
-            className={`flex items-center gap-2.5 rounded-md px-2.5 py-2 transition ${
+            className={`flex items-center gap-2.5 rounded-xl px-2.5 py-2 transition ${
               mine
                 ? "bg-white/15 hover:bg-white/25"
                 : "bg-surface ring-1 ring-line-2 hover:ring-brand-soft"
             }`}
           >
             <span
-              className={`grid h-8 w-8 shrink-0 place-items-center rounded-lg text-[10px] font-semibold ${
+              className={`grid h-8 w-8 shrink-0 place-items-center rounded-lg text-[9px] font-bold ${
                 mine ? "bg-white/20 text-white" : "bg-subtle-2 text-muted"
               }`}
             >
@@ -116,7 +116,7 @@ export function AttachmentGrid({
               <span className={`block truncate text-xs font-semibold ${mine ? "text-white" : ""}`}>
                 {file.filename}
               </span>
-              <span className={`block text-[11px] ${mine ? "text-white/70" : "text-faint"}`}>
+              <span className={`block text-[10px] ${mine ? "text-white/70" : "text-faint"}`}>
                 {typeLabel(file.mime)} · {formatBytes(file.bytes)}
               </span>
             </span>
@@ -173,7 +173,7 @@ export function ImageLightbox({
       role="dialog"
       aria-modal="true"
       aria-label={attachment.filename}
-      className="fixed inset-0 z-[60] flex flex-col bg-black/85"
+      className="fixed inset-0 z-[60] flex flex-col bg-black/85 backdrop-blur-sm"
       onMouseDown={(e) => {
         // Only a press that starts on the backdrop closes it, so a drag that began
         // on the image does not dismiss it.
@@ -185,7 +185,7 @@ export function ImageLightbox({
           <span className="block truncate text-sm font-semibold text-white">
             {attachment.filename}
           </span>
-          <span className="block text-xs text-white/60">
+          <span className="block text-[11px] text-white/60">
             {attachment.width && attachment.height
               ? `${attachment.width} × ${attachment.height} · `
               : ""}
@@ -195,7 +195,7 @@ export function ImageLightbox({
 
         <a
           href={attachmentHref(attachment.id, { download: true })}
-          className="rounded-full bg-white/15 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-white/25"
+          className="rounded-full bg-white/15 px-3 py-1.5 text-[11px] font-semibold text-white transition hover:bg-white/25"
         >
           Download
         </a>
@@ -273,7 +273,7 @@ export function ComposerAttachments({
         return (
           <div
             key={file.key}
-            className={`relative flex w-44 items-center gap-2 overflow-hidden rounded-md bg-subtle p-1.5 pr-7 ring-1 ${
+            className={`relative flex w-44 items-center gap-2 overflow-hidden rounded-xl bg-subtle p-1.5 pr-7 ring-1 ${
               file.status === "error" ? "ring-bad" : "ring-line-2"
             }`}
           >
@@ -285,19 +285,19 @@ export function ComposerAttachments({
                 className="h-9 w-9 shrink-0 rounded-lg object-cover"
               />
             ) : (
-              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-subtle-2 text-[10px] font-semibold text-muted">
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-subtle-2 text-[9px] font-bold text-muted">
                 {typeLabel(file.mime).slice(0, 4).toUpperCase()}
               </span>
             )}
 
             <span className="min-w-0 flex-1">
-              <span className="block truncate text-xs font-semibold">{file.filename}</span>
+              <span className="block truncate text-[11px] font-semibold">{file.filename}</span>
               {file.status === "error" ? (
                 <button
                   type="button"
                   onClick={() => onRetry(file.key)}
                   title={file.error}
-                  className="block max-w-full truncate text-[11px] font-semibold text-bad hover:underline"
+                  className="block max-w-full truncate text-[10px] font-semibold text-bad hover:underline"
                 >
                   Failed — retry
                 </button>
@@ -311,7 +311,7 @@ export function ComposerAttachments({
                   />
                 </span>
               ) : (
-                <span className="block text-[11px] text-faint">{formatBytes(file.bytes)}</span>
+                <span className="block text-[10px] text-faint">{formatBytes(file.bytes)}</span>
               )}
             </span>
 
@@ -347,7 +347,7 @@ export function AttachButton({
   return (
     <label
       title="Attach a file"
-      className={`grid h-[42px] w-10 shrink-0 cursor-pointer place-items-center rounded-md text-faint transition hover:bg-subtle hover:text-brand-fg ${
+      className={`grid h-[42px] w-10 shrink-0 cursor-pointer place-items-center rounded-xl text-faint transition hover:bg-subtle hover:text-brand-fg ${
         disabled ? "pointer-events-none opacity-50" : ""
       }`}
     >

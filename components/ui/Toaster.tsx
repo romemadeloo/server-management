@@ -110,9 +110,9 @@ export function Toaster({ children }: { children: React.ReactNode }) {
               />
               <span className="min-w-0 flex-1">
                 <span className="flex items-baseline gap-2">
-                  <span className="min-w-0 flex-1 truncate text-sm font-semibold text-ink">{toast.title}</span>
+                  <span className="min-w-0 flex-1 truncate text-sm font-bold">{toast.title}</span>
                   {toast.count && toast.count > 1 ? (
-                    <span className="shrink-0 rounded-full bg-brand-500 px-1.5 py-0.5 text-[11px] font-semibold tabular-nums text-on-brand">
+                    <span className="shrink-0 rounded-full bg-brand-500 px-1.5 py-0.5 text-[10px] font-bold text-white">
                       {toast.count}
                     </span>
                   ) : null}
@@ -126,7 +126,7 @@ export function Toaster({ children }: { children: React.ReactNode }) {
           return (
             <div
               key={toast.key}
-              className="pointer-events-auto flex animate-pop-in items-start gap-3 glass glass-float rounded-2xl border border-line bg-surface p-3 shadow-overlay"
+              className="pointer-events-auto flex items-start gap-3 rounded-2xl bg-surface p-3 shadow-xl ring-1 ring-line"
             >
               {toast.href && toast.external ? (
                 <a
@@ -154,7 +154,7 @@ export function Toaster({ children }: { children: React.ReactNode }) {
                 type="button"
                 onClick={() => dismiss(toast.key)}
                 aria-label="Dismiss"
-                className="grid h-6 w-6 shrink-0 place-items-center rounded-md text-faint transition hover:bg-subtle-2 hover:text-ink-2"
+                className="grid h-6 w-6 shrink-0 place-items-center rounded-full text-faint transition hover:bg-subtle-2 hover:text-ink-2"
               >
                 <Icon name="close" className="h-3 w-3" />
               </button>

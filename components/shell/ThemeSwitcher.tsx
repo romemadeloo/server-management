@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Icon } from "@/components/ui/Icon";
-import { Popover } from "@/components/ui/Popover";
 import {
   CUSTOM_THEME_PROPERTIES,
   THEME_STORAGE,
@@ -63,9 +62,11 @@ function applyTheme(mode: ThemeMode, palette: ThemePalette, primary_color: strin
 
 export function ThemeSwitcher() {
   const [open, setOpen] = useState(false);
-  const [mode, setMode] = useState<ThemeMode>("dark");
+  const [mode, setMode] = useState<ThemeMode>("system");
   const [palette, setPalette] = useState<ThemePalette>("violet");
   const [primary_color, setPrimaryColor] = useState(DEFAULT_PRIMARY);
+  const host_ref = useRef<HTMLDivElement>(null);
+  const trigger_ref = useRef<HTMLButtonElement>(null);
   const generated = useMemo(() => generateThemeTokens(primary_color), [primary_color]);
 
   useEffect(() => {
@@ -73,7 +74,7 @@ export function ThemeSwitcher() {
       const stored_mode = localStorage.getItem(THEME_STORAGE.mode);
       const stored_palette = localStorage.getItem(THEME_STORAGE.palette);
       const stored_primary = localStorage.getItem(THEME_STORAGE.primary)?.toLowerCase();
-      const next_mode = isMode(stored_mode) ? stored_mode : "dark";
+      const next_mode = isMode(stored_mode) ? stored_mode : "system";
       const next_palette = isPalette(stored_palette) ? stored_palette : "violet";
       const next_primary = isHexColor(stored_primary) ? stored_primary : DEFAULT_PRIMARY;
 
@@ -82,7 +83,7 @@ export function ThemeSwitcher() {
       setPrimaryColor(next_primary);
       applyTheme(next_mode, next_palette, next_primary);
     } catch {
-      applyTheme("dark", "violet", DEFAULT_PRIMARY);
+      applyTheme("system", "violet", DEFAULT_PRIMARY);
     }
   }, []);
 
@@ -93,6 +94,27 @@ export function ThemeSwitcher() {
     media.addEventListener("change", onChange);
     return () => media.removeEventListener("change", onChange);
   }, [mode, palette, primary_color]);
+
+  useEffect(() => {
+    if (!open) return;
+
+    function onPointerDown(event: MouseEvent) {
+      if (!host_ref.current?.contains(event.target as Node)) setOpen(false);
+    }
+
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key !== "Escape") return;
+      setOpen(false);
+      trigger_ref.current?.focus();
+    }
+
+    document.addEventListener("mousedown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open]);
 
   function chooseMode(next_mode: ThemeMode): void {
     setMode(next_mode);
@@ -117,30 +139,34 @@ export function ThemeSwitcher() {
   }
 
   return (
-    <Popover
-      label="Appearance"
-      open={open}
-      onOpenChange={setOpen}
-      className="w-72 p-3"
-      trigger={
-        <button type="button" aria-label="Appearance" title="Appearance" className="relative grid h-9 w-9 place-items-center rounded-full border border-line-2 bg-subtle text-muted transition-colors hover:bg-subtle-2 hover:text-ink data-[state=open]:bg-subtle-2 data-[state=open]:text-ink">
-          <Icon name="gear" className="h-4 w-4" />
-        </button>
-      }
-    >
-          <p className="text-xs font-medium text-muted">Brightness</p>
-          <div role="radiogroup" aria-label="Brightness" className="mt-1.5 grid grid-cols-3 gap-0.5 rounded-md bg-subtle-2 p-0.5">
+    <div className="relative shrink-0" ref={host_ref}>
+      <button
+        ref={trigger_ref}
+        type="button"
+        aria-haspopup="menu"
+        aria-expanded={open}
+        aria-label="Appearance"
+        title="Appearance"
+        onClick={() => setOpen((value) => !value)}
+        className="grid h-10 w-10 place-items-center rounded-xl text-faint ring-1 ring-line-2 transition hover:bg-brand-soft hover:text-brand-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+      >
+        <Icon name="gear" className="h-4 w-4" />
+      </button>
+
+      {open ? (
+        <div
+          role="menu"
+          className="absolute right-0 top-full z-50 mt-2 w-72 rounded-2xl bg-surface p-4 shadow-[0_20px_60px_rgba(0,0,0,0.18)] ring-1 ring-line-2"
+        >
+          <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-faint">Brightness</p>
+          <div className="mt-2 grid grid-cols-3 gap-1 rounded-xl bg-subtle-2 p-1">
             {MODES.map((option) => (
               <button
                 key={option.id}
                 type="button"
-                role="radio"
-                aria-checked={mode === option.id}
                 onClick={() => chooseMode(option.id)}
-                className={`h-7 rounded px-2 text-xs font-medium transition-colors ${
-                  mode === option.id
-                    ? "bg-surface text-ink shadow-[0_0_0_1px_var(--color-line),0_1px_2px_rgb(0_0_0/0.06)]"
-                    : "text-muted hover:text-ink"
+                className={`rounded-lg px-2 py-2 text-[11px] font-semibold transition ${
+                  mode === option.id ? "bg-surface text-brand-fg shadow-sm" : "text-muted hover:text-ink"
                 }`}
               >
                 {option.label}
@@ -148,31 +174,30 @@ export function ThemeSwitcher() {
             ))}
           </div>
 
-          <p className="pb-1.5 pt-4 text-xs font-medium text-muted">Color theme</p>
-          <div className="space-y-0.5">
+          <p className="pb-2 pt-4 text-[10px] font-bold uppercase tracking-[0.12em] text-faint">Color theme</p>
+          <div className="space-y-1">
             {PALETTES.map((option) => (
               <button
                 key={option.id}
                 type="button"
                 onClick={() => choosePalette(option.id)}
-                aria-pressed={palette === option.id}
-                className={`flex h-8 w-full items-center gap-2.5 rounded-md px-2 text-left text-[13px] transition-colors ${
-                  palette === option.id ? "bg-subtle-2 font-medium text-ink" : "text-body hover:bg-subtle hover:text-ink"
+                className={`flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-left text-xs font-semibold transition ${
+                  palette === option.id ? "bg-brand-soft text-brand-fg" : "text-body hover:bg-subtle hover:text-ink"
                 }`}
               >
                 <span
-                  className="h-3.5 w-3.5 shrink-0 rounded-[3px] ring-1 ring-inset ring-black/15"
+                  className="h-4 w-4 shrink-0 rounded-full ring-1 ring-black/10"
                   style={{ backgroundColor: option.swatch }}
                 />
                 <span className="flex-1">{option.label}</span>
-                {palette === option.id ? <Icon name="check" className="h-3.5 w-3.5 text-brand-fg" /> : null}
+                {palette === option.id ? <Icon name="check" className="h-3.5 w-3.5" /> : null}
               </button>
             ))}
           </div>
 
           <div
-            className={`mt-2 rounded-md border p-2.5 ${
-              palette === "custom" ? "border-brand-500 bg-brand-soft" : "border-line bg-subtle"
+            className={`mt-2 rounded-xl p-3 ${
+              palette === "custom" ? "bg-brand-soft ring-2 ring-brand-500" : "bg-subtle ring-1 ring-line-2"
             }`}
           >
             <div className="flex items-center gap-2.5">
@@ -181,8 +206,8 @@ export function ThemeSwitcher() {
                 onClick={() => choosePalette("custom")}
                 className="min-w-0 flex-1 text-left"
               >
-                <span className="block text-[13px] font-medium text-ink">Custom color</span>
-                <span className="block truncate text-xs text-muted">{generated.harmony}</span>
+                <span className="block text-xs font-bold text-ink-2">Custom color</span>
+                <span className="block truncate text-[10px] text-muted">{generated.harmony}</span>
               </button>
               <label htmlFor="topbar-custom-primary" className="sr-only">Choose a custom primary color</label>
               <input
@@ -190,10 +215,12 @@ export function ThemeSwitcher() {
                 type="color"
                 value={primary_color}
                 onChange={(event) => choosePrimary(event.target.value)}
-                className="h-8 w-10 cursor-pointer rounded-md border border-line-2 bg-surface p-0.5"
+                className="h-9 w-10 cursor-pointer rounded-lg bg-surface p-1 ring-1 ring-line-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
               />
             </div>
           </div>
-    </Popover>
+        </div>
+      ) : null}
+    </div>
   );
 }

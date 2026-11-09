@@ -8,8 +8,7 @@ import { RepoStrip } from "@/components/ui/RepoStrip";
 import { Table, Td, Th, Tr } from "@/components/ui/Table";
 import { BookingBar, TicketTitle } from "@/components/ui/TicketCell";
 import { formatDateTime } from "@/lib/shared/format";
-import { can, currentUserOrNull } from "@/lib/auth/require";
-import { AddEnvironmentButton } from "@/components/settings/EnvironmentsCard";
+import { currentUserOrNull } from "@/lib/auth/require";
 import { getBoard } from "@/lib/db/queries/board";
 import { avatarVersions } from "@/lib/db/queries/avatars";
 import { describeJiraConfig } from "@/lib/jira/client";
@@ -67,8 +66,8 @@ function StatusFilter({
   return (
     <Link
       href={href(search, { status: value })}
-      className={`inline-flex h-7 items-center gap-1.5 whitespace-nowrap rounded-md border px-2.5 text-xs font-medium transition-colors ${
-        active ? "border-brand-500 bg-brand-soft text-brand-fg" : "border-line-2 bg-surface text-body hover:border-faintest hover:text-ink"
+      className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[11px] font-semibold transition ${
+        active ? "bg-accent text-on-accent" : "bg-surface text-muted ring-1 ring-line-2 hover:text-ink"
       }`}
     >
       {value !== "all" ? (
@@ -93,17 +92,17 @@ function EnvironmentRow({ row, jiraBaseUrl }: { row: EnvRow; jiraBaseUrl: string
         <Link href={`/environments/${encodeURIComponent(row.id)}`} className="group flex items-center gap-3">
           <span className={`h-7 w-1 shrink-0 rounded-full ${token.dot}`} />
           <span className="min-w-0">
-            <span className="block truncate text-sm font-semibold group-hover:text-brand-fg group-hover:underline">
+            <span className="block truncate text-sm font-bold group-hover:text-brand-fg group-hover:underline">
               {row.name}
             </span>
-            <span className="block truncate text-xs text-faint">{row.accountName}</span>
+            <span className="block truncate text-[11px] text-faint">{row.accountName}</span>
           </span>
         </Link>
       </Td>
 
       <Td>
         <RepoStrip env={row.env} claims={row.claims} />
-        <p className="mt-1 text-[11px] text-faint">
+        <p className="mt-1 text-[10px] text-faint">
           {row.freeRepos.length} of {row.repos.length} free
         </p>
       </Td>
@@ -126,12 +125,12 @@ function EnvironmentRow({ row, jiraBaseUrl }: { row: EnvRow; jiraBaseUrl: string
                 ticketKey={first_claim.id}
                 source={first_claim.source}
                 jiraBaseUrl={jiraBaseUrl}
-                className="text-xs font-semibold text-brand-fg"
+                className="text-xs font-bold text-brand-fg"
               />
               <JiraChip status={first_claim.status} />
               {row.ticketIds.length > 1 ? (
                 <span
-                  className="rounded-full bg-subtle-2 px-1.5 text-[11px] font-semibold text-muted"
+                  className="rounded-full bg-subtle-2 px-1.5 text-[10px] font-bold text-muted"
                   title={row.ticketIds.slice(1).join(", ")}
                 >
                   +{row.ticketIds.length - 1}
@@ -162,7 +161,7 @@ function EnvironmentRow({ row, jiraBaseUrl }: { row: EnvRow; jiraBaseUrl: string
               {minutes !== null && minutes <= 0 ? "Overdue" : leftText(minutes)}
             </p>
             <BookingBar claim={row.soonest} minutes={minutes} className="mt-1.5 w-24" />
-            <p className="mt-1 whitespace-nowrap text-[11px] text-faint">
+            <p className="mt-1 whitespace-nowrap text-[10px] text-faint">
               until {formatDateTime(row.soonest.endTime)}
             </p>
           </>
@@ -194,10 +193,8 @@ function ViewToggle({ search, value, label }: { search: Search; value: "table" |
     <Link
       href={href(search, { view: value })}
       aria-pressed={active}
-      className={`inline-flex h-6 items-center gap-1.5 rounded px-2 text-xs font-medium transition-colors ${
-        active
-          ? "bg-surface text-ink shadow-[0_0_0_1px_var(--color-line),0_1px_2px_rgb(0_0_0/0.06)]"
-          : "text-muted hover:text-ink"
+      className={`inline-flex items-center gap-1.5 rounded-xl px-2.5 py-1.5 text-[11px] font-semibold transition ${
+        active ? "bg-accent text-on-accent shadow-sm" : "text-muted ring-1 ring-line-2 hover:bg-subtle hover:text-ink"
       }`}
     >
       {value === "table" ? <span className="text-[12px]">▤</span> : <span className="text-[12px]">▦</span>}
@@ -226,11 +223,11 @@ function MatrixView({
   };
 
   return (
-    <div className="overflow-hidden glass rounded-[20px] bg-surface ring-1 ring-line">
+    <div className="overflow-hidden rounded-2xl bg-surface shadow-sm ring-1 ring-line">
       <div className="overflow-x-auto">
         <table className="min-w-[760px] w-full text-left">
           <thead>
-            <tr className="border-b border-line bg-subtle text-xs font-medium text-muted">
+            <tr className="border-b border-line bg-subtle/60 text-[10px] font-bold uppercase tracking-[0.12em] text-faint">
               <Th>Account</Th>
               {orderedRepos.map((repo) => (
                 <Th key={repo}>{repoLabel(repo)}</Th>
@@ -245,7 +242,7 @@ function MatrixView({
                 <Tr key={account.id}>
                   <Td>
                     <div className="min-w-[180px]">
-                      <p className="text-sm font-semibold">{account.displayName}</p>
+                      <p className="text-sm font-bold">{account.displayName}</p>
                     </div>
                   </Td>
 
@@ -269,18 +266,18 @@ function MatrixView({
                                     ticketKey={claim.id}
                                     source={claim.source}
                                     jiraBaseUrl={jiraBaseUrl}
-                                    className="text-xs font-semibold text-brand-fg"
+                                    className="text-xs font-bold text-brand-fg"
                                     iconClassName="h-2.5 w-2.5 opacity-60"
                                   />
                                   <JiraChip status={claim.status} />
                                 </div>
                                 <div className="mt-1 max-w-[16rem]">
-                                  <TicketTitle claim={claim} lines={2} className="text-xs leading-4 text-body" />
+                                  <TicketTitle claim={claim} lines={2} className="text-[11px] leading-4 text-body" />
                                 </div>
                                 <div className="mt-1.5 flex items-center gap-2 min-w-0">
                                   {people.length ? <AvatarStack people={people} max={2} /> : null}
                                   {people.length ? (
-                                    <span className="truncate text-[11px] text-faint" title={people.map((person) => person.name).join(", ")}>
+                                    <span className="truncate text-[10px] text-faint" title={people.map((person) => person.name).join(", ")}>
                                       {people.slice(0, 2).map((person) => person.name).join(", ")}
                                       {people.length > 2 ? ` +${people.length - 2}` : ""}
                                     </span>
@@ -292,7 +289,7 @@ function MatrixView({
                                     link here rather than losing one. */}
                                 <Link
                                   href={`/environments/${encodeURIComponent(claim.serverId)}`}
-                                  className="mt-1 block truncate text-[11px] text-faint hover:text-brand-fg hover:underline"
+                                  className="mt-1 block truncate text-[10px] text-faint hover:text-brand-fg hover:underline"
                                   title={envName}
                                 >
                                   {envName}
@@ -352,14 +349,15 @@ export default async function EnvironmentsPage({ searchParams }: { searchParams:
           </>
         }
         actions={
-          // Courtesy only: POST /api/servers is the boundary (`configure`).
-          can(user, "configure") ? <AddEnvironmentButton accounts={accounts} /> : null
+          <ButtonLink href="/settings" variant="dark">
+            Add environment
+          </ButtonLink>
         }
       />
 
       <div className="flex flex-wrap items-center gap-2 pb-5">
-        <div className="inline-flex h-8 items-center gap-0.5 rounded-md bg-subtle-2 p-1">
-          <span className="px-1.5 text-xs text-muted">View</span>
+        <div className="inline-flex items-center gap-2 rounded-2xl bg-surface p-1 shadow-sm ring-1 ring-line-2">
+          <span className="px-2 text-[11px] font-semibold text-faint">View</span>
           <ViewToggle search={search} value="table" label="Table" />
           <ViewToggle search={search} value="matrix" label="Matrix" />
         </div>
@@ -380,8 +378,8 @@ export default async function EnvironmentsPage({ searchParams }: { searchParams:
         {mineIds.size || showMine ? (
           <Link
             href={href(search, { mine: showMine ? "" : "1" })}
-            className={`inline-flex h-7 items-center gap-1.5 whitespace-nowrap rounded-md border px-2.5 text-xs font-medium transition-colors ${
-              showMine ? "border-brand-500 bg-brand-soft text-brand-fg" : "border-line-2 bg-surface text-body hover:border-faintest hover:text-ink"
+            className={`rounded-full px-3.5 py-1.5 text-[11px] font-semibold transition ${
+              showMine ? "bg-accent text-on-accent" : "bg-surface text-muted ring-1 ring-line-2 hover:text-ink"
             }`}
           >
             My servers
@@ -389,14 +387,14 @@ export default async function EnvironmentsPage({ searchParams }: { searchParams:
         ) : (
           <span
             title="Nothing on the board is assigned to you"
-            className="inline-flex h-7 cursor-not-allowed items-center rounded-md border border-line bg-subtle px-2.5 text-xs font-medium text-faint"
+            className="cursor-not-allowed rounded-full bg-subtle-2 px-3.5 py-1.5 text-[11px] font-semibold text-faintest"
           >
             My servers
           </span>
         )}
 
         {filtered || search.q ? (
-          <Link href="/environments" className="ml-1 text-xs font-semibold text-brand-fg hover:underline">
+          <Link href="/environments" className="ml-1 text-[11px] font-semibold text-brand-fg hover:underline">
             Clear filters
           </Link>
         ) : null}

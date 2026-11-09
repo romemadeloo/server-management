@@ -100,7 +100,7 @@ export function HealthActions({
         <Icon name="refresh" className={`h-3.5 w-3.5 ${busy ? "animate-spin" : ""}`} />
         {busy ? "Checking…" : "Check servers"}
       </Button>
-      <span className="text-xs text-faint" role="status">
+      <span className="text-[11px] text-faint" role="status">
         {/* "while this page is open" would now be wrong: the timer moved to the
             header, so it runs on every page. */}
         {message ??

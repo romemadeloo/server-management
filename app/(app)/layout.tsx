@@ -1,4 +1,3 @@
-import { TooltipProvider } from "@/components/ui/Popover";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { Sidebar, type AccountRollup } from "@/components/shell/Sidebar";
@@ -112,7 +111,6 @@ export default async function AppLayout({ children }: { children: React.ReactNod
               initialTotal={unreadChats}
               canChat={roleCan(user.role, "chat")}
             >
-            <TooltipProvider>
             <div className="flex h-full">
               <Sidebar
                 user={user}
@@ -123,7 +121,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
               <div className="flex min-w-0 flex-1 flex-col bg-panel">
                 {/* useSearchParams needs a Suspense boundary above it. */}
-                <Suspense fallback={<div className="h-16 shrink-0 border-b border-line" />}>
+                <Suspense fallback={<div className="h-14 shrink-0 border-b border-line bg-panel" />}>
                   <Topbar
                     jiraEnabled={settings.jira.enabled}
                     lastSyncAt={syncState.lastSyncAt}
@@ -133,15 +131,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
                 </Suspense>
 
                 <OfflineBanner />
-                {/* `relative` is load-bearing: it makes <main> the containing block
-                    for absolutely-positioned descendants (every `sr-only` label
-                    is one). Without it they anchor to the page instead, stretch
-                    the document past the viewport, and any focus move — a menu
-                    or dialog opening — scrolls the whole shell off-screen. */}
-                <main className="no-scrollbar relative min-h-0 flex-1 overflow-y-auto pt-6">{children}</main>
+                <main className="no-scrollbar min-h-0 flex-1 overflow-y-auto pt-5">{children}</main>
               </div>
             </div>
-            </TooltipProvider>
             </UnreadProvider>
           </JiraNotificationProvider>
         </Toaster>

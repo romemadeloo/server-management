@@ -96,7 +96,7 @@ export default async function TeamPersonPage({
         actions={
           <Link
             href="/team"
-            className="inline-flex items-center rounded-md px-3.5 py-2 text-xs font-semibold text-muted ring-1 ring-line-2 transition hover:text-brand-fg hover:ring-brand-soft"
+            className="inline-flex items-center rounded-xl px-3.5 py-2 text-xs font-semibold text-muted ring-1 ring-line-2 transition hover:text-brand-fg hover:ring-brand-soft"
           >
             Back to the team
           </Link>
@@ -104,7 +104,7 @@ export default async function TeamPersonPage({
       />
 
       <section className="mb-5 grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div className="flex items-center gap-3.5 rounded-lg bg-surface p-4 ring-1 ring-line">
+        <div className="flex items-center gap-3.5 rounded-2xl bg-surface p-4 shadow-sm ring-1 ring-line">
           <Avatar
             person={{
               id: person.id,
@@ -114,7 +114,7 @@ export default async function TeamPersonPage({
             size="h-11 w-11"
           />
           <div className="min-w-0">
-            <p className="truncate text-sm font-semibold">{person.name}</p>
+            <p className="truncate text-sm font-bold">{person.name}</p>
             {/* Presence keys on the LOGIN, because it is a connection that is
                 online. Most of the board has no login at all. */}
             {login ? (
@@ -143,7 +143,7 @@ export default async function TeamPersonPage({
 
       {person.jiraNames.length ? (
         <div className="mb-4 flex flex-wrap items-center gap-1.5">
-          <span className="text-xs font-medium text-muted">
+          <span className="text-[10px] font-bold uppercase tracking-wide text-faint">
             Answers to
           </span>
           {person.jiraNames.map((name) => (

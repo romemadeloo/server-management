@@ -150,13 +150,13 @@ export function JiraSettings({
         {testResult ? <p className="mt-3 text-xs font-medium text-body">{testResult}</p> : null}
 
         {lastError ? (
-          <p className="mt-3 rounded-md bg-bad-soft px-3.5 py-2.5 text-xs text-bad">
+          <p className="mt-3 rounded-xl bg-bad-soft px-3.5 py-2.5 text-xs text-bad">
             Last sync failed: {lastError}
           </p>
         ) : null}
 
         {!connection.configured ? (
-          <p className="mt-3 text-xs leading-relaxed text-faint">
+          <p className="mt-3 text-[11px] leading-relaxed text-faint">
             Set <code className="font-mono">JIRA_BASE_URL</code>,{" "}
             <code className="font-mono">JIRA_EMAIL</code> and{" "}
             <code className="font-mono">JIRA_API_TOKEN</code> in your deployment, then redeploy.
@@ -211,7 +211,7 @@ export function JiraSettings({
             />
           </div>
 
-          <p className="rounded-md bg-subtle px-3.5 py-2.5 text-xs leading-relaxed text-muted">
+          <p className="rounded-xl bg-subtle px-3.5 py-2.5 text-[11px] leading-relaxed text-muted">
             The scheduled sync now runs about once a minute, set in{" "}
             <code className="font-mono">vercel.json</code> rather than here — a hosted cron cannot go
             below that. The legacy 20-second tick is gone; use <strong>Sync now</strong> when you need
@@ -226,7 +226,7 @@ export function JiraSettings({
       >
         <div className="space-y-5">
           <div>
-            <p className="text-xs font-semibold text-muted">Occupies a server</p>
+            <p className="text-[11px] font-semibold text-muted">Occupies a server</p>
             <div className="mt-2 flex flex-wrap gap-1.5">
               {JIRA_STATUS_VOCABULARY.map((status) => (
                 <button
@@ -239,7 +239,7 @@ export function JiraSettings({
                       : undefined
                   }
                   onClick={() => toggleStatus("occupyingStatuses", status)}
-                  className={`rounded-full px-2.5 py-1 text-[11px] font-semibold tracking-wide transition disabled:opacity-40 ${
+                  className={`rounded-full px-2.5 py-1 text-[10px] font-bold tracking-wide transition disabled:opacity-40 ${
                     has(jira.occupyingStatuses, status)
                       ? "bg-warn-strong text-white"
                       : "bg-subtle-2 text-muted hover:text-ink"
@@ -252,7 +252,7 @@ export function JiraSettings({
           </div>
 
           <div>
-            <p className="text-xs font-semibold text-muted">Frees the server</p>
+            <p className="text-[11px] font-semibold text-muted">Frees the server</p>
             <div className="mt-2 flex flex-wrap gap-1.5">
               {JIRA_STATUS_VOCABULARY.map((status) => (
                 <button
@@ -260,7 +260,7 @@ export function JiraSettings({
                   type="button"
                   disabled={busy !== null}
                   onClick={() => toggleStatus("releasingStatuses", status)}
-                  className={`rounded-full px-2.5 py-1 text-[11px] font-semibold tracking-wide transition disabled:opacity-40 ${
+                  className={`rounded-full px-2.5 py-1 text-[10px] font-bold tracking-wide transition disabled:opacity-40 ${
                     has(jira.releasingStatuses, status) || JIRA_TERMINAL_STATUSES.includes(status as never)
                       ? "bg-ok-strong text-white"
                       : "bg-subtle-2 text-muted hover:text-ink"
@@ -270,7 +270,7 @@ export function JiraSettings({
                 </button>
               ))}
             </div>
-            <p className="mt-2 text-xs leading-relaxed text-faint">
+            <p className="mt-2 text-[11px] leading-relaxed text-faint">
               {JIRA_TERMINAL_STATUSES.join(", ")} always free the environment, whatever this list says —
               a cancelled or closed ticket is nobody&apos;s work in progress, and leaving a box held in
               its name is a booking nothing will ever come back to clear.
@@ -278,7 +278,7 @@ export function JiraSettings({
           </div>
 
           <div>
-            <p className="text-xs font-semibold text-muted">Hidden from Active tickets</p>
+            <p className="text-[11px] font-semibold text-muted">Hidden from Active tickets</p>
             <div className="mt-2 flex flex-wrap gap-1.5">
               {JIRA_STATUS_VOCABULARY.map((status) => (
                 <button
@@ -286,7 +286,7 @@ export function JiraSettings({
                   type="button"
                   disabled={busy !== null}
                   onClick={() => toggleIgnored(status)}
-                  className={`rounded-full px-2.5 py-1 text-[11px] font-semibold tracking-wide transition disabled:opacity-40 ${
+                  className={`rounded-full px-2.5 py-1 text-[10px] font-bold tracking-wide transition disabled:opacity-40 ${
                     has(jira.ignoredStatuses, status)
                       ? "bg-accent text-on-accent"
                       : "bg-subtle-2 text-muted hover:text-ink"
@@ -296,11 +296,11 @@ export function JiraSettings({
                 </button>
               ))}
             </div>
-            <p className="mt-2 text-xs leading-relaxed text-faint">
+            <p className="mt-2 text-[11px] leading-relaxed text-faint">
               A ticket parked at one of these is not being worked on, so it is left off{" "}
               <strong>Active tickets</strong> — which asks what is in progress, not what exists.
             </p>
-            <p className="mt-2 text-xs leading-relaxed text-faint">
+            <p className="mt-2 text-[11px] leading-relaxed text-faint">
               It is still <em>fetched</em>, and still on <strong>My tickets</strong>. This list used
               to be cut out of the Jira query itself, which meant a person could not see their own
               closed or not-yet-started work anywhere in the app. Hiding a row and never reading it

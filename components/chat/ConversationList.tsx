@@ -79,9 +79,9 @@ export function ConversationList({
   );
 
   return (
-    <div className="flex h-full min-h-0 flex-col overflow-hidden glass rounded-[20px] bg-surface ring-1 ring-line">
+    <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-2xl bg-surface shadow-sm ring-1 ring-line">
       <div className="flex shrink-0 items-center justify-between gap-2 border-b border-line px-4 py-3">
-        <h2 className="text-sm font-semibold">Chat</h2>
+        <h2 className="text-sm font-bold tracking-tight">Chat</h2>
         <Button size="sm" variant="dark" onClick={() => setComposing(true)}>
           New
         </Button>
@@ -116,7 +116,7 @@ export function ConversationList({
               <Link
                 key={c.id}
                 href={`/chat/${c.id}`}
-                className={`mb-1 flex items-start gap-3 rounded-md px-2.5 py-2.5 transition ${
+                className={`mb-1 flex items-start gap-3 rounded-xl px-2.5 py-2.5 transition ${
                   active ? "bg-brand-soft" : "hover:bg-subtle"
                 }`}
               >
@@ -139,33 +139,33 @@ export function ConversationList({
                   <div className="flex items-baseline gap-2">
                     <p
                       className={`min-w-0 flex-1 truncate text-sm ${
-                        unread ? "font-semibold text-ink" : "font-semibold text-ink-2"
+                        unread ? "font-bold text-ink" : "font-semibold text-ink-2"
                       }`}
                     >
                       {c.title}
                     </p>
                     {lastAt ? (
-                      <span className="shrink-0 text-[11px] text-faint">{agoText(lastAt)}</span>
+                      <span className="shrink-0 text-[10px] text-faint">{agoText(lastAt)}</span>
                     ) : null}
                   </div>
 
                   <div className="mt-0.5 flex items-center gap-2">
                     <p
-                      className={`min-w-0 flex-1 truncate text-xs ${
+                      className={`min-w-0 flex-1 truncate text-[11px] ${
                         unread ? "font-medium text-body" : "text-faint"
                       }`}
                     >
                       {preview ?? "No messages yet"}
                     </p>
                     {unread ? (
-                      <span className="shrink-0 rounded-full bg-brand-500 px-1.5 py-0.5 text-[11px] font-semibold text-on-brand">
+                      <span className="shrink-0 rounded-full bg-brand-500 px-1.5 py-0.5 text-[10px] font-bold text-white">
                         {unread > 99 ? "99+" : unread}
                       </span>
                     ) : null}
                   </div>
 
                   {c.kind === "group" ? (
-                    <p className="mt-1 flex items-center gap-1 truncate text-[11px] text-faintest">
+                    <p className="mt-1 flex items-center gap-1 truncate text-[10px] text-faintest">
                       {/* Says "group" as well as counting, so a two-person group
                           is not mistaken for a DM at a glance. */}
                       <Icon name="users" className="h-2.5 w-2.5" />
@@ -183,7 +183,7 @@ export function ConversationList({
               <Icon name="chat" className="h-5 w-5" />
             </span>
             <p className="mt-3 text-xs text-faint">No conversations yet.</p>
-            <p className="mt-1 text-xs text-faintest">
+            <p className="mt-1 text-[11px] text-faintest">
               Only people with a login can be messaged.
             </p>
           </div>

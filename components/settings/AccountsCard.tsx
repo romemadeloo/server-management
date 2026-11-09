@@ -43,7 +43,7 @@ export function AccountsCard({
           accounts.map((account) => (
             <div
               key={account.id}
-              className="flex flex-wrap items-center gap-3 rounded-md bg-subtle px-3.5 py-3"
+              className="flex flex-wrap items-center gap-3 rounded-xl bg-subtle px-3.5 py-3"
             >
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-semibold">{account.displayName}</p>
@@ -55,7 +55,7 @@ export function AccountsCard({
                   ))}
                 </div>
               </div>
-              <span className="shrink-0 text-xs text-faint">
+              <span className="shrink-0 text-[11px] text-faint">
                 {envCount(account.id)} environment{envCount(account.id) === 1 ? "" : "s"}
               </span>
               <div className="flex shrink-0 gap-2">
@@ -166,7 +166,7 @@ function AccountDialog({
           onChange={(e) => setRepos(e.target.value)}
           required
         />
-        <p className="text-xs leading-relaxed text-faint">
+        <p className="text-[11px] leading-relaxed text-faint">
           Comma separated. These become the repository slots on every environment under this account.
           Jira&apos;s Repository field is matched against them, with{" "}
           <code className="font-mono">api</code> accepted for backend and{" "}
@@ -174,7 +174,7 @@ function AccountDialog({
         </p>
 
         {account && dropped.length ? (
-          <p className="rounded-md bg-bad-soft px-3.5 py-2.5 text-xs text-bad">
+          <p className="rounded-xl bg-bad-soft px-3.5 py-2.5 text-xs text-bad">
             Removing {dropped.join(", ")} deletes {dropped.length === 1 ? "that slot" : "those slots"}{" "}
             from every environment under this account — along with{" "}
             {dropped.length === 1 ? "its" : "their"} URLs, notes and any claim on{" "}
@@ -183,7 +183,7 @@ function AccountDialog({
         ) : null}
 
         {account && displayName.trim() && displayName !== account.displayName ? (
-          <p className="rounded-md bg-warn-soft px-3.5 py-2.5 text-xs text-warn">
+          <p className="rounded-xl bg-warn-soft px-3.5 py-2.5 text-xs text-warn">
             Renaming this changes which Jira tickets match it. Tickets still filled in with
             &quot;{account.displayName}&quot; will stop being placed until they are updated.
           </p>

@@ -26,17 +26,17 @@ export function PresenceCell({
 
   if (online === undefined) {
     return lastSeenAt ? (
-      <span className="whitespace-nowrap text-xs text-faint">
+      <span className="whitespace-nowrap text-[11px] text-faint">
         Seen {agoText(lastSeenAt)} ago
       </span>
     ) : (
-      <span className="text-xs text-faintest">—</span>
+      <span className="text-[11px] text-faintest">—</span>
     );
   }
 
   if (online) {
     return (
-      <span className="inline-flex items-center gap-1.5 whitespace-nowrap text-xs font-semibold text-ok">
+      <span className="inline-flex items-center gap-1.5 whitespace-nowrap text-[11px] font-semibold text-ok">
         <span className="h-1.5 w-1.5 rounded-full bg-ok" />
         Online
       </span>
@@ -44,7 +44,7 @@ export function PresenceCell({
   }
 
   return (
-    <span className="inline-flex items-center gap-1.5 whitespace-nowrap text-xs text-faint">
+    <span className="inline-flex items-center gap-1.5 whitespace-nowrap text-[11px] text-faint">
       <span className="h-1.5 w-1.5 rounded-full bg-faintest" />
       {lastSeenAt ? `Seen ${agoText(lastSeenAt)} ago` : "Offline"}
     </span>

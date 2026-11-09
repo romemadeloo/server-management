@@ -198,7 +198,7 @@ export function LinkPreviewCard({ body, mine }: { body: string; mine: boolean })
   return (
     <>
       {embedUrl ? (
-        <div className="mt-1.5 aspect-video overflow-hidden rounded-md bg-black">
+        <div className="mt-1.5 aspect-video overflow-hidden rounded-xl bg-black">
           <iframe
             src={embedUrl}
             title="YouTube video"
@@ -214,7 +214,7 @@ export function LinkPreviewCard({ body, mine }: { body: string; mine: boolean })
           href={url}
           target="_blank"
           rel="noopener noreferrer nofollow ugc"
-          className={`mt-1.5 block overflow-hidden rounded-md transition ${
+          className={`mt-1.5 block overflow-hidden rounded-xl transition ${
             mine
               ? "bg-white/15 hover:bg-white/25"
               : "bg-surface ring-1 ring-line-2 hover:ring-brand-soft"
@@ -242,7 +242,7 @@ export function LinkPreviewCard({ body, mine }: { body: string; mine: boolean })
 
       <div className="px-2.5 py-2">
         <p
-          className={`flex items-center gap-1 text-[11px] font-semibold ${
+          className={`flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wide ${
             mine ? "text-white/70" : "text-faint"
           }`}
         >
@@ -252,14 +252,14 @@ export function LinkPreviewCard({ body, mine }: { body: string; mine: boolean })
 
         {preview.title ? (
           <p
-            className={`mt-0.5 line-clamp-2 text-xs font-semibold ${mine ? "text-white" : "text-ink-2"}`}
+            className={`mt-0.5 line-clamp-2 text-xs font-bold ${mine ? "text-white" : "text-ink-2"}`}
           >
             {preview.title}
           </p>
         ) : null}
 
         {preview.description ? (
-          <p className={`mt-0.5 line-clamp-2 text-xs ${mine ? "text-white/70" : "text-faint"}`}>
+          <p className={`mt-0.5 line-clamp-2 text-[11px] ${mine ? "text-white/70" : "text-faint"}`}>
             {preview.description}
           </p>
         ) : null}
@@ -305,10 +305,10 @@ function MentionChip({
 }) {
   const tone = mine
     ? isViewer
-      ? "bg-white/35 text-white font-semibold"
+      ? "bg-white/35 text-white font-bold"
       : "bg-white/20 text-white"
     : isViewer
-      ? "bg-brand-500 text-on-brand font-semibold"
+      ? "bg-brand-500 text-white font-bold"
       : "bg-brand-soft text-brand-fg";
 
   return (

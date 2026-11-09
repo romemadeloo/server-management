@@ -82,7 +82,7 @@ export function BookingSettings({ settings }: { settings: Settings }) {
         </div>
 
         {settings.onExpiry === "auto-release" ? (
-          <p className="rounded-md bg-warn-soft px-3.5 py-2.5 text-xs text-warn">
+          <p className="rounded-xl bg-warn-soft px-3.5 py-2.5 text-xs text-warn">
             Expired claims are deleted by a scheduled job. That job refuses to run unless
             <code className="mx-1 font-mono">CRON_SECRET</code> is set, so check it is configured — an
             expiry setting that silently never fires is worse than one that is off.

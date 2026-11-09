@@ -11,52 +11,33 @@ import { getCurrentUser } from "@/lib/auth/session";
  */
 export const metadata = { title: "Sign in · Glophics Portal" };
 
-/**
- * The left panel: what the tool is, in the tool's own vocabulary. A small
- * legend of the four states the board uses stands in for a hero illustration —
- * it is the first thing a new person needs to learn, and it is real.
- */
-const STATES = [
-  { dot: "bg-ok", label: "Free", text: "Nobody holds it. Claim it and deploy." },
-  { dot: "bg-[#7be8c2]", label: "Partly free", text: "Some repositories are claimed, the rest are open." },
-  { dot: "bg-warn", label: "In use", text: "Held by a Jira ticket until it is released." },
-  { dot: "bg-bad", label: "Server down", text: "A repository failed its health check." },
-];
-
 function BrandPanel() {
   return (
-    // A fixed dark green, not a theme token: this panel is the brand, and it
-    // looks the same whichever theme the visitor last chose.
-    <div className="relative hidden overflow-hidden border-r border-white/10 bg-[#04100b] p-10 text-white lg:flex lg:flex-col lg:justify-between xl:p-14">
-      <div aria-hidden className="pointer-events-none absolute -left-40 -top-40 h-[34rem] w-[34rem] rounded-full bg-[#1fd396]/25 blur-3xl" />
-      <div aria-hidden className="pointer-events-none absolute -bottom-48 -right-24 h-[28rem] w-[28rem] rounded-full bg-[#0f7a55]/30 blur-3xl" />
-      <div className="relative flex items-center gap-2.5">
-        <span className="grid h-8 w-8 place-items-center rounded-md bg-white/10 ring-1 ring-inset ring-white/15">
-          <Icon name="servers" className="h-4 w-4" />
+    <div className="relative hidden overflow-hidden bg-gradient-to-br from-brand-500 to-brand-700 p-12 text-white lg:flex lg:flex-col lg:justify-between">
+      <svg
+        className="pointer-events-none absolute -right-16 top-1/2 h-96 w-96 -translate-y-1/2 text-white/10"
+        viewBox="0 0 100 100"
+        fill="currentColor"
+        aria-hidden="true"
+      >
+        <path d="M50 4c2 26 18 42 44 46-26 4-42 20-46 46-4-26-20-42-46-46 26-4 42-20 48-46z" />
+      </svg>
+
+      <div className="relative flex items-center gap-3">
+        <span className="grid h-10 w-10 place-items-center rounded-xl bg-white/15 backdrop-blur">
+          <Icon name="servers" className="h-5 w-5" />
         </span>
-        <span className="text-[15px] font-semibold">Glophics</span>
+        <span className="text-lg font-bold tracking-tight">Glophics</span>
       </div>
 
       <div className="relative max-w-md">
-        <h2 className="text-[26px] font-semibold leading-[1.2]">
+        <h2 className="text-[28px] font-bold leading-tight tracking-tight">
           Know which environment is free before you deploy.
         </h2>
-        <p className="mt-3 text-sm leading-relaxed text-white/70">
+        <p className="mt-3 text-sm leading-relaxed text-white/75">
           Every QA and staging box, who is holding it, and which ticket claimed it — live for the whole
           team.
         </p>
-
-        <dl className="mt-10 divide-y divide-white/10 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] px-4 backdrop-blur-md">
-          {STATES.map((state) => (
-            <div key={state.label} className="flex items-baseline gap-3 py-2.5">
-              <dt className="flex w-28 shrink-0 items-center gap-2 text-[13px] font-medium">
-                <span className={`h-2 w-2 rounded-full ${state.dot}`} />
-                {state.label}
-              </dt>
-              <dd className="text-[13px] text-white/65">{state.text}</dd>
-            </div>
-          ))}
-        </dl>
       </div>
 
       <p className="relative text-xs text-white/50">Ask a super admin for an account.</p>
@@ -83,9 +64,9 @@ export default async function LoginPage({
   if (user) redirect("/dashboard");
 
   return (
-    <div className="grid h-full lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
+    <div className="grid h-full lg:grid-cols-2">
       <BrandPanel />
-      <div className="flex items-center justify-center overflow-y-auto bg-panel px-6 py-12 sm:px-12">
+      <div className="flex items-center justify-center bg-surface px-6 py-12 sm:px-12">
         <LoginForm next={next} expired={expired === "1"} />
       </div>
     </div>

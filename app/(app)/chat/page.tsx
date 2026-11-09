@@ -5,7 +5,7 @@ export const metadata = { title: "Chat · Glophics Portal" };
 
 export default function ChatIndexPage() {
   return (
-    <div className="grid h-full place-items-center glass rounded-[20px] bg-surface ring-1 ring-line">
+    <div className="grid h-full place-items-center rounded-2xl bg-surface shadow-sm ring-1 ring-line">
       <div className="px-6 text-center">
         <span className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-subtle-2 text-faint">
           <Icon name="chat" className="h-6 w-6" />

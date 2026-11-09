@@ -20,17 +20,16 @@ import type {
  * a page number means something different on each page that uses it.
  */
 
-/** Same shape as FilterLink, so a page number and a filter read as the same
- *  kind of control. */
+/** Same pill as FilterLink on the health page, so a page number and a filter
+ *  chip read as the same kind of control. */
 const PILL =
-  "inline-flex h-9 min-w-9 items-center justify-center rounded-full px-3 text-[13px] font-medium tabular-nums transition-colors";
-const PILL_IDLE = "text-body hover:bg-subtle-2 hover:text-ink";
-const PILL_ACTIVE = "border border-brand-500/50 bg-brand-soft text-brand-fg";
+  "inline-flex min-w-[2rem] items-center justify-center rounded-full px-3 py-1.5 text-[11px] font-semibold transition";
+const PILL_IDLE = "bg-surface text-muted ring-1 ring-line-2 hover:text-ink";
+const PILL_ACTIVE = "bg-accent text-on-accent";
 
-/** IconButton's shape, applied to a link. */
-const CHEV =
-  "grid h-9 w-9 place-items-center rounded-full border border-line-2 bg-subtle text-muted transition-colors";
-const CHEV_ON = "hover:border-faintest hover:bg-subtle hover:text-ink";
+/** IconButton's round shape, applied to a link. */
+const CHEV = "grid h-8 w-8 place-items-center rounded-full text-faint ring-1 ring-line-2 transition";
+const CHEV_ON = "hover:bg-brand-soft hover:text-brand-fg hover:ring-brand-soft";
 const CHEV_OFF = "cursor-not-allowed opacity-40";
 
 /**
@@ -75,11 +74,11 @@ export function Pagination({
       aria-label="Pagination"
       className="flex flex-wrap items-center justify-between gap-3 pt-4"
     >
-      <p className="text-[13px] tabular-nums text-muted">
+      <p className="text-[11px] font-semibold text-faint">
         Showing {from}–{to} of {total} {label}
       </p>
 
-      <div className="flex flex-wrap items-center gap-1">
+      <div className="flex flex-wrap items-center gap-1.5">
         <Step href={href(page - 1)} label="Previous page" back disabled={page <= 1} />
 
         {window.map((entry, i) =>
@@ -89,7 +88,7 @@ export function Pagination({
             <span
               key={`gap-${i}`}
               aria-hidden
-              className="px-1 text-[13px] text-faint"
+              className="px-1 text-[11px] font-semibold text-faintest"
             >
               …
             </span>

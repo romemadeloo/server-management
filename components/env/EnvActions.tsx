@@ -124,7 +124,7 @@ export function AssignButton({
         >
           <div className="space-y-5">
             <div>
-              <p className="text-xs font-semibold text-muted">Repositories</p>
+              <p className="text-[11px] font-semibold text-muted">Repositories</p>
               {freeRepos.length ? (
                 <div className="mt-2 flex flex-wrap gap-2">
                   {freeRepos.map((repo) => {
@@ -135,8 +135,8 @@ export function AssignButton({
                         type="button"
                         aria-pressed={on}
                         onClick={() => setRepos((r) => toggle(r, repo))}
-                        className={`inline-flex h-8 items-center gap-1.5 rounded-md border px-3 text-[13px] font-medium transition-colors ${
-                          on ? "border-brand-500 bg-brand-soft text-brand-fg" : "border-line-2 bg-surface text-body hover:border-faintest hover:text-ink"
+                        className={`rounded-full px-3 py-1.5 text-[11px] font-semibold transition ${
+                          on ? "bg-accent text-on-accent" : "bg-surface text-muted ring-1 ring-line-2 hover:text-ink"
                         }`}
                       >
                         {shortRepo(repo)} · {repo}
@@ -152,8 +152,8 @@ export function AssignButton({
             </div>
 
             <div>
-              <p className="text-xs font-semibold text-muted">Assign to</p>
-              <div className="mt-2 max-h-40 space-y-1.5 overflow-y-auto rounded-md bg-subtle p-3">
+              <p className="text-[11px] font-semibold text-muted">Assign to</p>
+              <div className="mt-2 max-h-40 space-y-1.5 overflow-y-auto rounded-xl bg-subtle p-3">
                 {directory.length ? (
                   directory.map((person) => (
                     <Checkbox

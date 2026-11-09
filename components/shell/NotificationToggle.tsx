@@ -30,7 +30,7 @@ export function NotificationToggle() {
       aria-pressed={enabled}
       disabled={denied}
       onClick={async () => setPermission(await Notification.requestPermission())}
-      className={`relative grid h-9 w-9 place-items-center rounded-md ring-1 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 ${
+      className={`relative grid h-9 w-9 place-items-center rounded-xl ring-1 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 ${
         enabled
           ? "bg-brand-soft text-brand-fg ring-brand-200"
           : "bg-subtle text-muted ring-line-soft hover:bg-subtle-2 hover:text-ink"

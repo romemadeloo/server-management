@@ -126,7 +126,7 @@ export function PersonDialogButton({
               value={jiraNames}
               onChange={(e) => setJiraNames(e.target.value)}
             />
-            <p className="text-xs leading-relaxed text-faint">
+            <p className="text-[11px] leading-relaxed text-faint">
               Comma separated. These are matched against a ticket&apos;s <strong>Ticket Assignee</strong>{" "}
               field, so they decide whose tickets these are. Leave blank to use the display name. A label
               can only belong to one person — two people answering to the same one would make matching a
@@ -305,7 +305,7 @@ export function LoginDialogButton({
             ) : null}
           </div>
 
-          <p className="mt-4 text-xs leading-relaxed text-faint">
+          <p className="mt-4 text-[11px] leading-relaxed text-faint">
             Changing the role or deactivating the account ends every session that person has
             immediately — an open tab loses the access it had rather than keeping it until reload.
           </p>

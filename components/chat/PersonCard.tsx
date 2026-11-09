@@ -1,6 +1,6 @@
 "use client";
 
-import { Dialog as RadixDialog } from "radix-ui";
+import { useEffect } from "react";
 import { Avatar } from "@/components/ui/Avatar";
 import { Icon } from "@/components/ui/Icon";
 import { MEMBER_ROLE_LABEL } from "@/lib/chat/groups";
@@ -37,35 +37,45 @@ export function PersonCard({
   isViewer: boolean;
   onClose: () => void;
 }) {
-  // Radix Dialog rather than a hand-rolled overlay: it traps focus inside the
-  // card, hands it back to the mention that opened it, and marks the thread
-  // underneath inert for a screen reader — the old div did none of the three.
+  useEffect(() => {
+    function onKey(event: KeyboardEvent) {
+      if (event.key === "Escape") onClose();
+    }
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
   return (
-    <RadixDialog.Root open onOpenChange={(open) => (open ? null : onClose())}>
-      <RadixDialog.Portal>
-        <RadixDialog.Overlay className="fixed inset-0 z-[60] bg-[rgb(10_14_13/0.45)] data-[state=open]:animate-overlay-in" />
-        <RadixDialog.Content
-          aria-describedby={undefined}
-          className="fixed left-1/2 top-1/2 z-[60] w-[calc(100vw-2rem)] max-w-xs -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-lg bg-surface shadow-overlay outline-none data-[state=open]:animate-dialog-in"
-        >
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label={member.displayName}
+      className="fixed inset-0 z-[60] grid place-items-center bg-black/50 p-4 backdrop-blur-sm"
+      onMouseDown={(e) => {
+        // Only a press that both starts and ends on the backdrop closes it, so a
+        // drag beginning inside the card does not dismiss it.
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div className="w-full max-w-xs overflow-hidden rounded-2xl bg-surface shadow-2xl ring-1 ring-line">
         <div className="flex items-start gap-3 p-4">
           <Avatar
             person={{ id: member.id, name: member.displayName, avatarUrl: member.avatarUrl }}
-            size="h-12 w-12"
+            size="h-14 w-14"
             online={tracking ? online : undefined}
           />
           <div className="min-w-0 flex-1">
-            <RadixDialog.Title className="truncate text-sm font-semibold text-ink">
+            <p className="truncate text-sm font-bold">
               {member.displayName}
-              {isViewer ? <span className="font-normal text-muted"> (you)</span> : null}
-            </RadixDialog.Title>
-            <p className="mt-0.5 text-xs text-muted">
+              {isViewer ? <span className="font-normal text-faint"> (you)</span> : null}
+            </p>
+            <p className="mt-0.5 text-[11px] text-faint">
               {MEMBER_ROLE_LABEL[member.memberRole]} in this conversation
             </p>
             {tracking ? (
               <p
-                className={`mt-1.5 flex items-center gap-1.5 text-xs font-medium ${
-                  online ? "text-ok" : "text-muted"
+                className={`mt-1 flex items-center gap-1 text-[11px] font-semibold ${
+                  online ? "text-ok" : "text-faint"
                 }`}
               >
                 <span
@@ -76,20 +86,21 @@ export function PersonCard({
             ) : null}
           </div>
 
-          <RadixDialog.Close
+          <button
+            type="button"
+            onClick={onClose}
             aria-label="Close"
-            className="-mr-1 -mt-1 grid h-7 w-7 shrink-0 place-items-center rounded-md text-faint transition-colors hover:bg-subtle-2 hover:text-ink"
+            className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-faint transition hover:bg-subtle-2 hover:text-ink-2"
           >
             <Icon name="close" className="h-3.5 w-3.5" />
-          </RadixDialog.Close>
+          </button>
         </div>
 
-        <p className="flex items-center gap-1.5 border-t border-line bg-subtle px-4 py-2.5 text-xs text-muted">
+        <p className="flex items-center gap-1.5 border-t border-line px-4 py-2.5 text-[11px] text-faint">
           <Icon name="clock" className="h-3 w-3 shrink-0" />
           Joined {formatDateTime(member.joinedAt) ?? "this conversation"}
         </p>
-        </RadixDialog.Content>
-      </RadixDialog.Portal>
-    </RadixDialog.Root>
+      </div>
+    </div>
   );
 }

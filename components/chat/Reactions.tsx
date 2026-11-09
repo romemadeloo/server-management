@@ -103,7 +103,7 @@ export function ReactionPicker({
         aria-expanded={open}
         aria-label={reactions.length ? "React, or see who reacted" : "Add a reaction"}
         title={reactions.length ? "React, or see who reacted" : "Add a reaction"}
-        className={`grid h-6 w-6 place-items-center rounded-full text-xs transition ${
+        className={`grid h-6 w-6 place-items-center rounded-full text-[11px] transition ${
           open
             ? "bg-brand-soft text-brand-fg ring-1 ring-brand-soft"
             : "text-faintest ring-1 ring-line-2 hover:bg-subtle hover:text-muted"
@@ -118,7 +118,7 @@ export function ReactionPicker({
           aria-label="Reactions"
           // Above the ⊕ rather than below it: the newest messages sit at the
           // bottom of the scroller, where "below" is off-screen.
-          className={`absolute bottom-full z-20 mb-1 w-max max-w-[15rem] rounded-lg bg-surface p-2 shadow-overlay ring-1 ring-line ${
+          className={`absolute bottom-full z-20 mb-1 w-max max-w-[15rem] rounded-2xl bg-surface p-2 shadow-xl ring-1 ring-line ${
             align === "right" ? "right-0" : "left-0"
           }`}
         >
@@ -152,7 +152,7 @@ export function ReactionPicker({
           {reactions.length ? (
             <div className="mt-2 space-y-1 border-t border-line pt-2">
               {reactions.map((group) => (
-                <p key={group.emoji} className="flex items-start gap-1.5 text-xs text-faint">
+                <p key={group.emoji} className="flex items-start gap-1.5 text-[11px] text-faint">
                   <span aria-hidden="true" className="shrink-0">
                     {group.emoji}
                   </span>
@@ -211,7 +211,7 @@ export function ReactionPills({
             // leaving the reader to infer it from a ring they cannot see.
             aria-pressed={mine}
             aria-label={`${group.users.length} ${group.emoji} — ${reactionTooltip(group, viewerId)}`}
-            className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold transition ${
+            className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold transition ${
               mine
                 ? "bg-brand-soft text-brand-fg ring-1 ring-brand-soft"
                 : "bg-subtle-2 text-muted ring-1 ring-line-2 hover:bg-subtle"

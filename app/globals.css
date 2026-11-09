@@ -48,9 +48,6 @@
   --color-accent: #3d3d3d;
   --color-accent-2: #505050;
   --color-on-accent: #ffffff;
-  /* text on a brand-coloured fill: white on the light theme's deep teal, near-
-     black on the dark theme's mint */
-  --color-on-brand: #ffffff;
 
   /* status — `-soft` is the chip background, the bare name is the text */
   --color-ok: #047857;
@@ -75,88 +72,7 @@
   --color-neutral: #646b69;
   --color-neutral-soft: #eef0ef;
 
-  /*
-    Inter for the interface, self-hosted by next/font (see app/layout.tsx),
-    which defines --font-inter and --font-plex-mono on <html>. Inter is drawn
-    for screens at small sizes and has true tabular figures, which a board of
-    counts, money-like values and times leans on. Ticket keys, branches and
-    URLs are set in the mono so they read as identifiers, not prose.
-  */
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-plex-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
-
-  /*
-    One elevation for everything that floats — menus, popovers, dialogs, toasts.
-    A hairline plus a short, soft drop, in the manner of Carbon and Atlassian,
-    rather than a different large blurred shadow on each surface.
-  */
-  --shadow-overlay: 0 0 0 1px rgb(16 24 22 / 0.08), 0 4px 8px -2px rgb(16 24 22 / 0.08),
-    0 12px 28px -6px rgb(16 24 22 / 0.16);
-  --shadow-raised: 0 1px 0 rgb(16 24 22 / 0.04);
-
-  /* Motion: short and decelerating. Overlays enter, they do not perform. */
-  --animate-overlay-in: overlay-in 140ms ease-out;
-  --animate-overlay-out: overlay-out 100ms ease-in;
-  --animate-dialog-in: dialog-in 160ms cubic-bezier(0.2, 0, 0, 1);
-  --animate-dialog-out: dialog-out 100ms ease-in;
-  --animate-pop-in: pop-in 120ms cubic-bezier(0.2, 0, 0, 1);
-  --animate-pop-out: overlay-out 80ms ease-in;
-  --animate-sheet-in: sheet-in 200ms cubic-bezier(0.2, 0, 0, 1);
-
-  @keyframes overlay-in {
-    from { opacity: 0; }
-  }
-  @keyframes overlay-out {
-    to { opacity: 0; }
-  }
-  @keyframes dialog-in {
-    from { opacity: 0; transform: translateY(6px) scale(0.985); }
-  }
-  @keyframes dialog-out {
-    to { opacity: 0; transform: scale(0.985); }
-  }
-  @keyframes pop-in {
-    from { opacity: 0; transform: translateY(-3px); }
-  }
-  @keyframes sheet-in {
-    from { transform: translateY(100%); }
-  }
-}
-
-/*
-  Base layer. The app is a dense tool, so its body size is 14px rather than the
-  browser's 16 — and every focusable element gets the same visible focus ring,
-  so keyboard users are not at the mercy of whether a component remembered one.
-*/
-@layer base {
-  html {
-    -webkit-text-size-adjust: 100%;
-    text-rendering: optimizeLegibility;
-  }
-  body {
-    font-size: 0.875rem;
-    line-height: 1.45;
-  }
-  :focus-visible {
-    outline: 2px solid var(--color-brand-500);
-    outline-offset: 2px;
-  }
-  /* Inputs draw their own focus state (border + halo), so the outline would
-     double it. */
-  input:focus-visible,
-  textarea:focus-visible,
-  select:focus-visible {
-    outline: none;
-  }
-  ::selection {
-    background: var(--color-brand-200);
-    color: var(--color-ink);
-  }
-  /* Numbers in a tool are compared down a column; keep their widths equal. */
-  table,
-  time {
-    font-variant-numeric: tabular-nums;
-  }
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
 }
 
 .no-scrollbar::-webkit-scrollbar {
@@ -167,77 +83,52 @@
   scrollbar-width: none;
 }
 
-/*
-  Dark mode: only the variables change.
-
-  Three layers of near-black rather than one grey — the sidebar sits lowest
-  (canvas), the working area above it (panel), cards above that (surface) —
-  so depth reads from tone alone and cards need only a hairline, not a shadow.
-  The accent is a bright mint: on black it carries the same weight a deep teal
-  does on white, and it is the one saturated colour on the page, so a primary
-  button or a live number is findable at a glance. Text on it is near-black
-  (`on-brand`), because white on mint fails contrast.
-*/
+/* Dark mode: only the variables change. */
 html.dark {
-  --shadow-overlay: 0 0 0 1px rgb(255 255 255 / 0.07), 0 8px 16px -4px rgb(0 0 0 / 0.5),
-    0 24px 48px -12px rgb(0 0 0 / 0.65);
-  --shadow-raised: 0 1px 0 rgb(255 255 255 / 0.03) inset;
+  --color-canvas: #0e1211;
+  --color-surface: #181d1c;
+  --color-panel: #131817;
+  --color-subtle: #202725;
+  --color-subtle-2: #29312f;
 
-  /* Glass: surfaces are translucent over the green-lit backdrop painted on
-     <body> below, so the light shows through every card a little. Lines are
-     white at low alpha for the same reason — a solid grey line would sit on
-     top of the glass instead of being an edge of it. */
-  --color-canvas: rgb(6 12 9 / 0.55);
-  --color-panel: transparent;
-  --color-surface: rgb(18 30 25 / 0.58);
-  --color-subtle: rgb(255 255 255 / 0.045);
-  --color-subtle-2: rgb(255 255 255 / 0.08);
+  --color-line: #29312f;
+  --color-line-2: #39433f;
+  --color-line-soft: #222a28;
 
-  --color-line: rgb(255 255 255 / 0.08);
-  --color-line-2: rgb(255 255 255 / 0.14);
-  --color-line-soft: rgb(255 255 255 / 0.05);
+  --color-ink: #f3f5f4;
+  --color-ink-2: #d1d7d5;
+  --color-body: #adb8b4;
+  --color-muted: #929f9a;
+  --color-faint: #707d78;
+  --color-faintest: #4f5c57;
 
-  --color-ink: #f4f6f5;
-  --color-ink-2: #dce1df;
-  --color-body: #b4bcb9;
-  --color-muted: #8a9490;
-  --color-faint: #6b7571;
-  --color-faintest: #48514d;
+  --color-accent: #e7e9e8;
+  --color-accent-2: #cfd4d2;
+  --color-on-accent: #222625;
 
-  --color-accent: #f4f6f5;
-  --color-accent-2: #dce1df;
-  --color-on-accent: #0b0c0c;
+  --color-ok: #4ade80;
+  --color-ok-soft: #10291d;
+  --color-warn: #fbbf24;
+  --color-warn-soft: #2a2010;
+  --color-warn-strong: #fbbf24;
+  --color-bad: #fb7185;
+  --color-bad-soft: #2c1218;
+  --color-info: #54cfba;
+  --color-info-soft: #0b2923;
+  --color-alt: #d1d2d3;
+  --color-alt-soft: #292b2b;
+  --color-secondary: #d1d2d3;
+  --color-secondary-soft: #292b2b;
+  --color-tertiary: #54cfba;
+  --color-tertiary-soft: #0b2923;
+  --color-brand-fg: #54cfba;
+  --color-brand-soft: #0b2923;
+  --color-neutral: #929f9a;
+  --color-neutral-soft: #29312f;
 
-  --color-brand-50: #0c2219;
-  --color-brand-100: #0f2e22;
-  --color-brand-200: #144330;
-  --color-brand-300: #2fd69a;
-  --color-brand-500: #2fd69a;
-  --color-brand-600: #52e1ae;
-  --color-brand-700: #78e9c1;
-  --color-on-brand: #04140d;
-
-  --color-ok: #3ddc97;
-  --color-ok-soft: #0e2a1e;
-  --color-ok-strong: #22b77a;
-  --color-warn: #f3b54a;
-  --color-warn-soft: #2a2110;
-  --color-warn-strong: #f3b54a;
-  --color-bad: #f46b7f;
-  --color-bad-soft: #2d1419;
-  --color-bad-strong: #e0435c;
-  --color-info: #2fd69a;
-  --color-info-soft: #0c2219;
-  --color-alt: #d1d5d3;
-  --color-alt-soft: #232726;
-  --color-secondary: #d1d5d3;
-  --color-secondary-soft: #232726;
-  --color-tertiary: #2fd69a;
-  --color-tertiary-soft: #0c2219;
-  --color-brand-fg: #3fe0a6;
-  --color-brand-soft: #0e271d;
-  --color-neutral: #8a9490;
-  --color-neutral-soft: #232726;
+  --color-brand-50: #0b2923;
+  --color-brand-100: #103a31;
+  --color-brand-200: #155144;
 }
 
 html[data-theme="ocean"] {
@@ -381,46 +272,4 @@ html.dark {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
   }
-}
-
-/*
-  The glass layer (dark theme).
-
-  Unlayered on purpose: it must beat the `bg-canvas` utility on <body>, and
-  Tailwind's utilities live in a cascade layer that unlayered rules outrank.
-
-  The backdrop is a few large, soft green light sources over near-black, fixed
-  to the viewport so it stays put while panes scroll. Everything above it is
-  translucent (see the html.dark tokens), which is what makes it read as glass.
-*/
-html.dark body {
-  background:
-    radial-gradient(1100px 620px at 12% -12%, rgb(30 150 104 / 0.34), transparent 62%),
-    radial-gradient(900px 520px at 105% 2%, rgb(18 110 80 / 0.26), transparent 60%),
-    radial-gradient(1000px 700px at 55% 115%, rgb(12 84 60 / 0.32), transparent 62%),
-    #040806;
-  background-attachment: fixed;
-}
-
-/*
-  `.glass` marks a surface: a card, the sidebar, a dialog, a menu. On dark it
-  gets the top-lit sheen (brighter at the top edge, fading down) and an inner
-  highlight on the upper rim — the two cues that make a translucent panel look
-  like a pane of glass rather than a dim rectangle. Floating ones also blur
-  what is behind them. On light it is a no-op; the light theme stays solid.
-*/
-html.dark .glass {
-  background-image: linear-gradient(180deg, rgb(255 255 255 / 0.055), rgb(255 255 255 / 0) 42%);
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.07),
-    0 1px 2px rgb(0 0 0 / 0.25);
-}
-html.dark .glass-float {
-  background-color: rgb(14 24 20 / 0.78);
-  -webkit-backdrop-filter: blur(22px) saturate(150%);
-  backdrop-filter: blur(22px) saturate(150%);
-}
-/* The one saturated object on a dark page — primary buttons — glows a little. */
-html.dark .glow {
-  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.06) inset, 0 6px 22px -8px var(--color-brand-500);
 }

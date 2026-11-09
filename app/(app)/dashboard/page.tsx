@@ -4,8 +4,7 @@ import { JiraAutoSync } from "@/components/dashboard/JiraAutoSync";
 import { Chip, Dash, JiraChip } from "@/components/ui/Chips";
 import { Icon } from "@/components/ui/Icon";
 import { ClaimRepoLinks, TicketLink } from "@/components/ui/JiraLinks";
-import { ButtonLink } from "@/components/ui/Button";
-import { Empty, Page, PageHead, SectionHead, StatTile } from "@/components/ui/Layout";
+import { Empty, Page, StatTile } from "@/components/ui/Layout";
 import { RepoStrip } from "@/components/ui/RepoStrip";
 import { Table, Td, Th, Tr } from "@/components/ui/Table";
 import { BookingBar, TicketCell, TicketTitle } from "@/components/ui/TicketCell";
@@ -13,7 +12,7 @@ import { can, currentUserOrNull } from "@/lib/auth/require";
 import { getBoard, getJiraIssues } from "@/lib/db/queries/board";
 import { avatarVersions } from "@/lib/db/queries/avatars";
 import { describeJiraConfig, issueUrl } from "@/lib/jira/client";
-import { boardSummary, type BoardSummary } from "@/lib/shared/occupancy";
+import { boardSummary } from "@/lib/shared/occupancy";
 import { jiraActivity } from "@/lib/shared/activity";
 import { formatDateTime } from "@/lib/shared/format";
 import { jiraBranchConflicts, type JiraBranchConflict } from "@/lib/shared/jira-conflicts";
@@ -51,14 +50,14 @@ function JiraConflictNotice({
 
   return (
     <div
-      className="mb-4 flex gap-3 rounded-lg bg-warn-soft px-4 py-3.5 text-warn ring-1 ring-warn-soft"
+      className="mb-4 flex gap-3 rounded-2xl bg-warn-soft px-4 py-3.5 text-warn ring-1 ring-warn-soft"
       role="status"
     >
-      <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-surface">
+      <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-surface/70">
         <Icon name="alert" className="h-4 w-4" />
       </span>
       <div className="min-w-0 text-xs leading-5">
-        <p className="font-semibold">
+        <p className="font-bold">
           Branch conflict detected in {ticket_ids.length} ticket{ticket_ids.length === 1 ? "" : "s"}
         </p>
         <p className="text-warn/90">
@@ -66,7 +65,7 @@ function JiraConflictNotice({
           {repos.map(shortRepo).join(", ")} repository. Assign a different branch to the affected tickets.
         </p>
         <div className="mt-2 flex flex-wrap items-center gap-1.5">
-          <span className="mr-0.5 text-[11px] font-semibold">Affected tickets</span>
+          <span className="mr-0.5 text-[10px] font-bold uppercase tracking-wide">Affected tickets</span>
           {ticket_ids.map((ticket_id) =>
             jira_base_url ? (
               <a
@@ -75,7 +74,7 @@ function JiraConflictNotice({
                 target="_blank"
                 rel="noopener noreferrer"
                 title={`Open ${ticket_id} in Jira`}
-                className="inline-flex items-center gap-1 rounded-md bg-surface/80 px-2 py-1 text-[11px] font-semibold text-warn ring-1 ring-warn-soft transition hover:bg-surface hover:ring-warn"
+                className="inline-flex items-center gap-1 rounded-md bg-surface/80 px-2 py-1 text-[10px] font-bold text-warn ring-1 ring-warn-soft transition hover:bg-surface hover:ring-warn"
               >
                 {ticket_id}
                 <Icon name="external" className="h-2.5 w-2.5" />
@@ -84,7 +83,7 @@ function JiraConflictNotice({
             ) : (
               <strong
                 key={ticket_id}
-                className="rounded-md bg-surface/80 px-2 py-1 text-[11px] ring-1 ring-warn-soft"
+                className="rounded-md bg-surface/80 px-2 py-1 text-[10px] ring-1 ring-warn-soft"
               >
                 {ticket_id}
               </strong>
@@ -98,148 +97,6 @@ function JiraConflictNotice({
 
 /** How many held tickets a card lists before summarising the rest. Three is
  *  what fits beside two other cards without one card towering over the row. */
-/**
- * The pool at a glance: one bar, split into free, partly free and fully held.
- *
- * Offline is deliberately not a fourth segment — it is not a share of the pool
- * but a property that cuts across all three (a free environment can be down),
- * so it is the "Needs attention" tile's job instead.
- */
-function DashboardHero({ summary }: { summary: BoardSummary }) {
-  const held = Math.max(0, summary.total - summary.free - summary.partial);
-  const parts = [
-    { key: "free", label: "Free", value: summary.free, bar: "bg-ok" },
-    { key: "partial", label: "Partly free", value: summary.partial, bar: "bg-brand-300" },
-    { key: "held", label: "Fully held", value: held, bar: "bg-warn" },
-  ];
-  const total = Math.max(1, summary.total);
-
-  return (
-    <section className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
-      {/* The spotlight: the one number the dashboard is opened for, on a
-          mint-lit pane. The light is a radial wash from the corner rather than
-          a flat fill, so it reads as glass catching light, not a coloured box. */}
-      <div className="glass relative overflow-hidden rounded-[24px] border border-brand-500/25 bg-surface p-6 sm:p-7">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -left-24 -top-32 h-80 w-80 rounded-full bg-brand-500/25 blur-3xl"
-        />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -bottom-40 right-0 h-72 w-96 rounded-full bg-brand-500/10 blur-3xl"
-        />
-        <div className="relative">
-          <p className="text-[13px] font-medium text-brand-fg">Available now</p>
-          <p className="mt-2 flex items-baseline gap-3">
-            <span className="text-[56px] font-semibold leading-none tracking-[-0.03em] tabular-nums text-ink">
-              {summary.free}
-            </span>
-            <span className="text-lg font-medium text-muted">of {summary.total} environments free</span>
-          </p>
-          <p className="mt-3 max-w-md text-sm text-body">
-            {summary.free === 0
-              ? "Every environment is taken. Free one up, or wait for the next booking to end."
-              : "Claim one before your ticket reaches QA — the board updates for everyone the moment you do."}
-          </p>
-
-          <div className="mt-6 flex h-2.5 gap-1 overflow-hidden rounded-full bg-subtle-2" role="presentation">
-            {parts.map((part) =>
-              part.value ? (
-                <span
-                  key={part.key}
-                  className={`h-full rounded-full ${part.bar}`}
-                  style={{ width: `${(part.value / total) * 100}%` }}
-                  title={`${part.label}: ${part.value}`}
-                />
-              ) : null,
-            )}
-          </div>
-          <ul className="mt-3 flex flex-wrap gap-x-5 gap-y-1.5 text-xs text-muted">
-            {parts.map((part) => (
-              <li key={part.key} className="inline-flex items-center gap-1.5">
-                <span className={`h-2 w-2 rounded-full ${part.bar}`} />
-                {part.label}
-                <span className="font-semibold tabular-nums text-ink">{part.value}</span>
-              </li>
-            ))}
-          </ul>
-
-          <div className="mt-6 flex flex-wrap gap-2">
-            <ButtonLink href="/environments" variant="primary" size="lg">
-              Browse environments
-            </ButtonLink>
-            <ButtonLink href="/in-use" variant="ghost" size="lg">
-              See what is held
-            </ButtonLink>
-          </div>
-        </div>
-      </div>
-
-      <PoolGauge summary={summary} />
-    </section>
-  );
-}
-
-/**
- * How much of the pool is usable right now, as a 270° gauge. "Usable" is
- * free plus partly free — a partly free environment can still take a deploy
- * to its open repositories, which is the question this answers.
- */
-function PoolGauge({ summary }: { summary: BoardSummary }) {
-  const usable = summary.free + summary.partial;
-  const share = summary.total ? usable / summary.total : 0;
-  const radius = 64;
-  const arc = 2 * Math.PI * radius * 0.75;
-  const verdict = share >= 0.6 ? "Plenty free" : share >= 0.3 ? "Getting busy" : "Nearly full";
-  const stroke = share >= 0.6 ? "var(--color-brand-500)" : share >= 0.3 ? "var(--color-warn)" : "var(--color-bad)";
-
-  return (
-    <div className="glass flex flex-col rounded-[24px] border border-line bg-surface p-6">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <p className="text-base font-semibold text-ink">Pool health</p>
-          <p className="mt-0.5 text-[13px] text-muted">Free or partly free right now</p>
-        </div>
-        <span className="rounded-full bg-subtle px-2.5 py-1 text-xs font-medium tabular-nums text-body ring-1 ring-inset ring-line-2">
-          {summary.claimsCount} claim{summary.claimsCount === 1 ? "" : "s"}
-        </span>
-      </div>
-
-      <div className="relative mx-auto mt-4 grid h-44 w-44 place-items-center">
-        <svg viewBox="0 0 160 160" className="absolute inset-0 h-full w-full rotate-[135deg]" aria-hidden="true">
-          <circle
-            cx="80" cy="80" r={radius} fill="none" stroke="var(--color-subtle-2)" strokeWidth="12"
-            strokeLinecap="round" strokeDasharray={`${arc} ${2 * Math.PI * radius}`}
-          />
-          <circle
-            cx="80" cy="80" r={radius} fill="none" stroke={stroke} strokeWidth="12" strokeLinecap="round"
-            strokeDasharray={`${arc * share} ${2 * Math.PI * radius}`}
-            style={{ filter: `drop-shadow(0 0 10px ${stroke})` }}
-          />
-        </svg>
-        <div className="text-center">
-          <p className="text-[40px] font-semibold leading-none tracking-[-0.03em] tabular-nums text-ink">
-            {Math.round(share * 100)}
-            <span className="text-xl text-muted">%</span>
-          </p>
-          <p className="mt-1.5 text-[13px] font-medium text-body">{verdict}</p>
-        </div>
-      </div>
-
-      <dl className="mt-auto grid grid-cols-2 gap-2 pt-4 text-xs">
-        <div className="rounded-2xl bg-subtle px-3 py-2.5 ring-1 ring-inset ring-line">
-          <dt className="text-muted">People holding</dt>
-          <dd className="mt-0.5 text-base font-semibold tabular-nums text-ink">{summary.peopleCount}</dd>
-        </div>
-        <div className="rounded-2xl bg-subtle px-3 py-2.5 ring-1 ring-inset ring-line">
-          <dt className="text-muted">Repos held</dt>
-          <dd className="mt-0.5 text-base font-semibold tabular-nums text-ink">{summary.reposHeld}</dd>
-        </div>
-      </dl>
-    </div>
-  );
-}
-
 const CARD_TICKETS = 3;
 
 /**
@@ -272,34 +129,31 @@ function HeldCard({
   const href = `/environments/${encodeURIComponent(row.id)}`;
 
   return (
-    <article className="glass relative flex flex-col overflow-hidden rounded-[20px] border border-line bg-surface transition-colors hover:border-line-2">
-      {/* The state is a 3px top edge and a chip, not a tinted header: a page of
-          amber cards made "in use" — the normal state of a busy board — look
-          like a page of warnings. */}
-      <span aria-hidden className={`absolute inset-x-10 top-0 h-px ${token.dot} opacity-80`} />
-      <span aria-hidden className={`pointer-events-none absolute -top-16 left-1/2 h-24 w-2/3 -translate-x-1/2 rounded-full ${token.dot} opacity-[0.12] blur-2xl`} />
-      <div className="relative border-b border-line-soft px-5 pb-4 pt-5">
+    <article className="flex flex-col overflow-hidden rounded-2xl bg-surface shadow-sm ring-1 ring-line transition hover:shadow-md">
+      <div className={`p-4 ${tone.soft}`}>
         <div className="flex items-center justify-between gap-2">
-          <span className="min-w-0 truncate text-xs text-muted">{row.accountName}</span>
           <span
-            className={`inline-flex h-6 shrink-0 items-center gap-1.5 rounded-full px-2.5 text-xs font-medium ring-1 ring-inset ring-current/25 ${tone.soft} ${tone.fg}`}
+            className={`inline-flex items-center gap-1.5 rounded-full bg-surface/70 px-2.5 py-1 text-[10px] font-bold backdrop-blur ${tone.fg}`}
           >
             <span className={`h-1.5 w-1.5 rounded-full ${token.dot}`} />
             {token.label}
           </span>
+          <span className="truncate rounded-md bg-surface/70 px-2 py-0.5 text-[10px] font-bold tracking-wide text-muted">
+            {row.accountName.toUpperCase()}
+          </span>
         </div>
-        <Link href={href} className="mt-1.5 block truncate text-[17px] font-semibold tracking-[-0.01em] text-ink hover:underline">
+        <Link href={href} className="mt-2.5 block truncate text-[15px] font-bold hover:underline">
           {row.name}
         </Link>
         <div className="mt-2.5 flex items-center justify-between gap-2">
           <RepoStrip env={row.env} claims={row.claims} />
-          <span className="whitespace-nowrap text-xs font-semibold text-body">
+          <span className="whitespace-nowrap text-[11px] font-semibold text-body">
             {row.freeRepos.length} of {row.repos.length} free
           </span>
         </div>
       </div>
 
-      <div className="flex-1 divide-y divide-line-soft px-5">
+      <div className="flex-1 divide-y divide-line-soft px-4">
         {shown.length ? (
           shown.map((claim) => {
             const people = peopleOf([claim], directory, avatars);
@@ -312,7 +166,7 @@ function HeldCard({
                       ticketKey={claim.id}
                       source={claim.source}
                       jiraBaseUrl={jira_base_url}
-                      className="text-xs font-semibold text-brand-fg"
+                      className="text-xs font-bold text-brand-fg"
                       iconClassName="h-2.5 w-2.5 opacity-60"
                     />
                     <JiraChip status={claim.status} />
@@ -322,7 +176,7 @@ function HeldCard({
                       <span
                         key={repo}
                         title={repo}
-                        className="rounded-full bg-subtle-2 px-2 py-0.5 text-[10px] font-semibold text-muted"
+                        className="rounded bg-subtle-2 px-1.5 py-0.5 text-[9px] font-bold text-muted"
                       >
                         {shortRepo(repo)}
                       </span>
@@ -337,7 +191,7 @@ function HeldCard({
                     <PeopleCell people={people} max={2} />
                   </div>
                   <span
-                    className={`shrink-0 whitespace-nowrap text-xs font-semibold ${
+                    className={`shrink-0 whitespace-nowrap text-[11px] font-semibold ${
                       left !== null && left <= 0 ? "text-bad" : isUrgent(left) ? "text-warn" : "text-muted"
                     }`}
                   >
@@ -356,10 +210,10 @@ function HeldCard({
         )}
       </div>
 
-      <div className="border-t border-line-soft bg-subtle px-5 py-3.5">
+      <div className="border-t border-line-soft bg-subtle/60 px-4 py-3">
         {row.soonest ? (
           <>
-            <div className="flex items-center justify-between gap-2 text-xs">
+            <div className="flex items-center justify-between gap-2 text-[11px]">
               <span className={isUrgent(minutes) ? "font-semibold text-warn" : "text-muted"}>
                 {minutes !== null && minutes <= 0
                   ? "Booking overdue"
@@ -370,15 +224,15 @@ function HeldCard({
             <BookingBar claim={row.soonest} minutes={minutes} className="mt-1.5 w-full" />
           </>
         ) : (
-          <p className="text-xs text-faint">{row.claims.length ? "No end time set" : "Nothing booked"}</p>
+          <p className="text-[11px] text-faint">{row.claims.length ? "No end time set" : "Nothing booked"}</p>
         )}
-        <div className="mt-2.5 flex items-center justify-between text-xs">
+        <div className="mt-2.5 flex items-center justify-between text-[11px]">
           <span className="text-faint">
             {more > 0
               ? `+${more} more ticket${more === 1 ? "" : "s"}`
               : `${tickets.length} ticket${tickets.length === 1 ? "" : "s"}`}
           </span>
-          <Link href={href} className="inline-flex items-center gap-1 rounded-full px-2 py-1 font-semibold text-brand-fg transition-colors hover:bg-brand-soft">
+          <Link href={href} className="inline-flex items-center gap-1 font-semibold text-brand-fg hover:underline">
             Open environment
             <Icon name="chevron" className="h-3 w-3" />
           </Link>
@@ -413,7 +267,7 @@ function JiraUpdateRow({
           badge={activity ? <Chip className={activity.chipClassName}>{activity.badge}</Chip> : null}
         />
         {activity ? (
-          <p className="mt-1.5 max-w-[30rem] whitespace-normal break-words border-l-2 border-line-2 pl-2 text-xs leading-4 text-muted">
+          <p className="mt-1.5 max-w-[30rem] whitespace-normal break-words border-l-2 border-line-2 pl-2 text-[11px] leading-4 text-muted">
             {activity.message}
           </p>
         ) : null}
@@ -435,7 +289,7 @@ function JiraUpdateRow({
             {row.env}
           </Link>
         ) : null}
-        <p className="mt-1 inline-flex max-w-[12rem] whitespace-normal break-all rounded-lg bg-subtle-2 px-2 py-1 font-mono text-xs font-medium text-body">
+        <p className="mt-1 inline-flex max-w-[12rem] whitespace-normal break-all rounded-lg bg-subtle-2 px-2 py-1 font-mono text-[11px] font-medium text-body">
           {row.claim.branch ?? row.env}
         </p>
       </Td>
@@ -501,19 +355,54 @@ export default async function DashboardPage() {
 
   return (
     <Page>
-      <PageHead title="Dashboard" sub="The environment pool, what is held, and what Jira changed last." />
+      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-500 to-brand-700 px-8 py-7 text-white">
+        <svg
+          className="pointer-events-none absolute -right-6 top-1/2 h-56 w-56 -translate-y-1/2 text-white/15"
+          viewBox="0 0 100 100"
+          fill="currentColor"
+          aria-hidden="true"
+        >
+          <path d="M50 4c2 26 18 42 44 46-26 4-42 20-46 46-4-26-20-42-46-46 26-4 42-20 48-46z" />
+        </svg>
 
-      <DashboardHero summary={summary} />
+        <p className="text-[11px] font-bold tracking-[0.16em] text-white/70">ENVIRONMENT POOL</p>
+        <h1 className="mt-2 max-w-lg text-[27px] font-bold leading-tight tracking-tight">
+          {summary.free === 0 ? (
+            "Every environment is taken"
+          ) : (
+            <>
+              {summary.free} environment{summary.free === 1 ? " is" : "s are"} free
+              <br />
+              and ready to book
+            </>
+          )}
+        </h1>
+        <p className="mt-2 max-w-md text-sm text-white/75">
+          {summary.free === 0
+            ? "Free one up, or wait for the next booking to end."
+            : "Claim one before your ticket reaches QA testing."}
+        </p>
 
-      <section className="mt-4 grid grid-cols-2 gap-4 xl:grid-cols-4">
-        {/* Not "Available now": the spotlight above already says that, in
-            larger type. Partly free is the number it only shows as a sliver. */}
+        {/* text-on-accent is explicit: the section sets text-white, which would
+            otherwise be inherited onto a button that goes light in dark mode. */}
+        <Link
+          href="/environments"
+          className="mt-5 inline-flex items-center gap-2.5 rounded-full bg-accent py-2.5 pl-5 pr-2.5 text-sm font-semibold text-on-accent transition hover:bg-accent-2"
+        >
+          Browse environments
+          <span className="grid h-6 w-6 place-items-center rounded-full bg-on-accent/15">
+            <Icon name="chevron" className="h-3 w-3" />
+          </span>
+        </Link>
+      </section>
+
+      <section className="mt-5 grid grid-cols-2 gap-4 xl:grid-cols-4">
         <StatTile
-          tone="brand"
-          label="Partly free"
-          value={summary.partial}
-          sub="some repositories still open"
-          icon="servers"
+          tone="ok"
+          label="Available now"
+          value={summary.free}
+          sub={`of ${summary.total} environments`}
+          icon="check"
         />
         <StatTile
           tone="warn"
@@ -538,17 +427,14 @@ export default async function DashboardPage() {
         />
       </section>
 
-      <section className="mt-8">
-        <SectionHead
-          title="Held right now"
-          sub="Environments with at least one repository claimed, soonest to free first"
-          action={
-            <Link href="/in-use" className="text-[13px] font-medium text-brand-fg hover:underline">
-              See all
-            </Link>
-          }
-        />
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <section className="mt-7">
+        <div className="flex items-center justify-between">
+          <h2 className="text-[17px] font-bold tracking-tight">Held right now</h2>
+          <Link href="/in-use" className="text-xs font-semibold text-brand-fg hover:underline">
+            See all
+          </Link>
+        </div>
+        <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {held.length ? (
             held.map((row) => (
               <HeldCard
@@ -565,13 +451,13 @@ export default async function DashboardPage() {
         </div>
       </section>
 
-      <section className="mt-8">
+      <section className="mt-7">
         <div className="flex min-w-0 flex-col">
-          <div className="flex flex-wrap items-end justify-between gap-3 pb-3">
+          <div className="flex flex-wrap items-end justify-between gap-3 pb-4">
             <div>
-              <h2 className="text-[15px] font-semibold leading-6 text-ink">Latest Jira updates</h2>
+              <h2 className="text-[17px] font-bold tracking-tight">Latest Jira updates</h2>
               <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1">
-                <p className="text-[13px] text-muted">Most recently updated tickets, synced from Jira</p>
+                <p className="text-xs text-faint">Most recently updated tickets, synced from Jira</p>
                 {settings.jira.enabled && settings.jira.autoSync ? (
                   <JiraAutoSync interval_minutes={settings.jira.pollIntervalMinutes} />
                 ) : null}
@@ -582,7 +468,7 @@ export default async function DashboardPage() {
                 link. The table above it stays — a preview of recent Jira
                 activity is not the same thing as the whole backlog. */}
             {can(user, "all-tickets") ? (
-              <Link href="/tickets" className="text-[13px] font-medium text-brand-fg hover:underline">
+              <Link href="/tickets" className="text-xs font-semibold text-brand-fg hover:underline">
                 See all
               </Link>
             ) : null}

@@ -215,12 +215,12 @@ export default async function UsersPage() {
                       <p className="flex items-center gap-2 truncate text-sm font-semibold">
                         {label}
                         {isSelf ? (
-                          <span className="rounded-md bg-subtle-2 px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-muted">
+                          <span className="rounded-md bg-subtle-2 px-1.5 py-0.5 text-[9px] font-bold tracking-wide text-muted">
                             YOU
                           </span>
                         ) : null}
                       </p>
-                      <p className="truncate text-xs text-faint">
+                      <p className="truncate text-[11px] text-faint">
                         {person ? (
                           person.jobRole || "No role set"
                         ) : (
@@ -318,13 +318,13 @@ export default async function UsersPage() {
         <Card title="What each role can do" sub="Roles are fixed; who holds them is not.">
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             {AUTH_ROLES.map((role) => (
-              <div key={role.id} className="rounded-md bg-subtle p-3.5">
+              <div key={role.id} className="rounded-xl bg-subtle p-3.5">
                 <Chip className={roleChip(role.id)}>{role.label}</Chip>
                 <p className="mt-2 text-xs leading-relaxed text-body">{role.description}</p>
               </div>
             ))}
           </div>
-          <p className="mt-4 text-xs leading-relaxed text-faint">
+          <p className="mt-4 text-[11px] leading-relaxed text-faint">
             A role only means anything to someone with a login. Changing it, deactivating them, or
             resetting their password ends their open sessions immediately — they do not keep the old
             access until a reload.
